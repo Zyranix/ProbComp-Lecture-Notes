@@ -132,10 +132,10 @@ install-packages:
 
 generate-deploy:
 	@mkdir dist
-	@mv full.pdf dist/2022_ADM2.pdf
-	@mv full.log dist/2022_ADM2.log
+	@mv full.pdf dist/2024_CompStats.pdf
+	@mv full.log dist/2024_CompStats.log
 	@cd dist/
-	@tree -H '.' -I "index.html" -D --charset utf-8 -T "Discrete Optimization" > index.html
+	@tree -H '.' -I "index.html" -D --charset utf-8 -T "Computational Statistics" > index.html
 
 
 
