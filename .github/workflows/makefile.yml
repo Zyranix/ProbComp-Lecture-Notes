@@ -1,0 +1,37 @@
+name: Make and Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:    
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Handle prerequisites
+      run: make before-install
+    
+    - name: Compile LaTeX document
+      uses: xu-cheng/latex-action@v2
+      with:
+        root_file: full.tex
+        args: -pdf -dvi- -latexoption=-interaction=nonstopmode
+      env:
+        TEXINPUTS: "LatexPackagesBuild//:"
+      
+    - name: Install packages
+      run: make install-packages
+      
+    - name: Pre-Deploy
+      run: make generate-deploy
+    
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@v4.3.3
+      with:
+        branch: live-script # The branch the action should deploy to.
+        folder: dist # The folder the action should deploy.
+    
