@@ -1,11 +1,10 @@
-![Live PDF status](https://github.com/Zyranix/ADM2-Lecture-Notes/actions/workflows/makefile.yml/badge.svg)
+![Live PDF status](https://github.com/Zyranix/CompStat-Lecture-Notes/actions/workflows/makefile.yml/badge.svg)
 
-# Discrete Optimization
+# Computational Statistics
+These are my lecture notes for the module 'Computational Statistics', taught by [Prof. Dr. Bernhard Y. Renard](http://www.renard.it/) in the summer term 2024 at Hasso-Plattner-Institut. There is no guarantee for completeness or correctness.
 
-These are my lecture notes for the module 'Algorithmic Discrete Optimization', taught by [Prof. Dr. Tom McCormick](https://www.sauder.ubc.ca/people/thomas-mccormick) in the summer term 2022 at the TU Berlin. There is no guarantee for completeness or correctness.
-
-- The homepage of the course can also be found [here](https://www3.math.tu-berlin.de/coga/study/teaching/adm-ii-summer-2022/)
-- The [most recent version](https://zyranix.github.io/ADM2-Lecture-Notes/2022_ADM2.pdf) of this script is made available with Github Actions. You can also have a look at the [generated log files](https://zyranix.github.io/ADM2-Lecture-Notes/2022_ADM2.log)
+- The homepage of the course can also be found [here](https://hpi.de/studium/im-studium/lehrveranstaltungen/data-engineering-ma/lehrveranstaltung/sose-24-4012-computational-statistics.html)
+- The [most recent version](https://zyranix.github.io/CompStat-Lecture-Notes/2024_CompStat.pdf) of this script is made available with Github Actions. You can also have a look at the [generated log files](https://zyranix.github.io/CompStat-Lecture-Notes/2024_CompStat.log)
 
 ## Set-up
 This set-up is largely inspired by Maximilian Keßler's set-up for lecture notes, but also includes some additional dirty changes in the `.sty`-files. Please refer to [this link](https://gitlab.com/latexci/packages/LatexPackages) for further details. Nonetheless, not all features of Maximilian's set-up are currently used. 
