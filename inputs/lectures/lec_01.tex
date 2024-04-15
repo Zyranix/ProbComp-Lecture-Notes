@@ -4,121 +4,155 @@
 %      -----
 % \end{orga}
 
-\section{Introduction}
-In ADM1 we often already worked with Integer Programming and just assumed everything is fine.
-In this course however, we want to find out how Integer Programming actually works, why it is generally "hard", and under which circumstances it is "easy".
-\begin{definition}[Flavors of $\IP$]
-    First of all, we want to define different variants of \vocab{Integer Programming}:
-    \begin{itemize}
-        \item \vocab[Integer Programming!pure]{Pure Integer Programming} assumes \emph{all} variables are integer.
-        \item \vocab[Integer Programming!mixed]{Mixed Integer Programming} also allows some variables to be real.
-        \item \vocab[Integer Programming!binary]{Binary Integer Programming}, also called 0-1-Integer-Programming, restricts the integer variables to $\bool \coloneqq\{0,1\}$. Mixed variants are also possible.
-    \end{itemize}
+\section{Probabilistic method}
+This section will introduce how probability can be used to solve problems that at first glance do not have anything to do with probability.
+Consider following combinatorial problem.
+\begin{definition}[Ramsay numbers]
+    We define $R_k$ as the smallest integer $n$ such that any graph with $n$ vertices must contain either a clique or an independent set of size $K$.
+    We call $R_k$ the (symmetric) Ramsay numbers.
 \end{definition}
-\begin{question}
-    Why is $\IP$ harder than $\LP$?
-    Naively, one would assume this should \emph{not} be the case, because our search space is smaller (at most countably infinite)!
-\end{question}
-Let's solve the $\IP$ in ADM1-style - suppose
-\begin{maxi*}{x}{w^Tx}{}{}
-    \addConstraint{x \in Q}{ = \{x \in \integers^n \colon Ax \leq b\}}
-\end{maxi*}
-For simplicity, assume $Q$ is bounded. Then the set of feasible points in $Q$
-is finite, and therefore we can consider the polytope
-\begin{align*}
-    \conv(Q) = \{x \in \realnum^n \mid A'x \leq b'\}
-\end{align*}
-for suitable $A'$ and $b'$. Notice all vertices must be in $Q$ and thus are integral.
-As a consequence, it is sufficient to solve the $\LP$
-\begin{maxi*}{x}{w^Tx}{}{}
-    \addConstraint{A'x}{\leq b'.}
-\end{maxi*}
-\begin{warning}
-    Computing $A',b'$ is non-trivial! In fact, computing the \vocab{integer hull} $\conv(Q)$
-    is what makes $\IP$ hard.
-\end{warning}
-
-\subsection{$\IP$ is "hard"}
-We can gather more evidence that $\IP$ must be hard.
-\begin{theorem}
-    \label{thm:ip-logical-decomposition}
-    Every logical statement can be expressed with integer programming.
-\end{theorem}
-\begin{proof}
-    It suffices to show that for variables $x_1,x_2,y \in \bool$ we can find $\IP$s that model $\AND, \OR, \NOT$.
+Let us first look at some examples to get some feeling.
+\begin{example}
     \begin{itemize}
-        \item $y = x_1 \AND x_2$ can be modeled as
-              \begin{align*}
-                  y & \leq x_1           \\
-                  y & \leq x_2           \\
-                  y & \geq x_1 + x_2 - 1
-              \end{align*}
-        \item $y \coloneqq x_1 \OR x_2$ can be modeled as
-              \begin{align*}
-                  y & \geq x_1       \\
-                  y & \geq x_2       \\
-                  y & \leq x_1 + x_2
-              \end{align*}
-        \item $y \coloneqq \neg x$ can be modeled as
-              \begin{align*}
-                  y & = 1- x
-              \end{align*}
+        The first few Ramsay numbers are given as
+        \item $R_2=2$: Obviously, $R_k \geq k$. Furthermore, there are only two different graphs with two nodes, i.e. with or without an edge.
+              In the former case, both nodes form a clique, in the latter they form an independet set of size 2.
+        \item $R_3=6$: First, let us show $R_3 \geq 6$. Consider a cycle of 5 nodes. Then, there is no clique of size 3 (since there is no 3-cycle).
+              Also, among any three nodes two nodes are connected by an edge, so there is no independent set. Therefore, this is a counterexample.
+              Now, consider a graph with 6 nodes. Suppose there is no clique of size 3. Then it suffices to show that there is an independent set of 3 nodes.
+              Indeed, with an ugly case distinction this is possible: If there are no cycles, the graph is bipartite, so there is an independent set of at least 3.
+              Otherwise, there exists at least a 4-cycle, but no 3-cycle (i.e. chord-free).
+              We can then select at least two independent nodes from the cycle, and if needed the missing third node from the non-cycle nodes such that they form an independent set.
+        \item $R_4 = 18$.
+        \item $R_5 \in [43, 48]$. The exact value is indeed still unknown!
     \end{itemize}
-\end{proof}
+\end{example}
+As we can see, even for small Ramsay numbers, it is not trivial to determine their value.
 \begin{theorem}
-    \label{thm:ip-model-union}
-    $\IP$ can model (finite) unions of polyhedra, e.g. non-convex problems.
+    For every $k \geq 1$ holds $R_k > 2^{k/2}$.
 \end{theorem}
 \begin{proof}
-    Consider
-    \begin{align*}
-        P \coloneqq \bigcup_{i=1}^k \underbrace{\{x \mid A_ix \leq b_i\}}_{P_i}
-    \end{align*}
-    and introduce auxiliary binary variables
-    \begin{align*}
-        y_i \coloneqq \begin{cases}
-                          1, & \text{if $x \in P_i$},   \\
-                          0, & \text{if we don't care.} \\
-                      \end{cases}
-    \end{align*}
-    Now, assume $M \in \realnum$ large enough (\vocab[Big-M method]{Big-$M$ method}), such that
-    \begin{align*}
-        P_i \subset \overline{P} \coloneqq \{x \mid A_ix \leq b_i + M \cdot \mathbf{1}\}
-    \end{align*}
-    for all $i$. Thus, we can construct following $\IP$:
-    \begin{mini*}{x}{w^Tx}{}{}
-        \addConstraint{A_ix}{\leq b_i + (1-y_i) M \cdot \mathbf{1}, \quad}{i=1, \dots, k}
-        \addConstraint{\sum_i y_i}{=1}
-    \end{mini*}
-    This forces exactly one $y_i$ to $1$, resulting that $x \in P_i$ and $x \in \overline{P}$ is sufficient.
-    We call this method \vocab[Big-M method!righthandside]{righthandside Big-$M$}, short RHS.
-    Further information can be found in \cite[Ch. 1]{int-comb-optimization}.
+    Consider a uniform distribution over all graphs with $n$ vertices (i.e. an Erdös (random) graph $\mathcal{G}(n, \frac{1}{2})$).
+    Each edge in particular exists with probability $\frac{1}{2}$.
+    Now, have a look at $p \coloneqq P(G \sim \mathcal{G(n, \frac{1}{2})} \text{has a $k$-clique or $k$ independent set})$.
+    If we can show that this probability is less than 1, then this means there is an instance such that the property is \emph{not} satisfied,
+    and therefore $R_k > n$.
+
+    Let $S$ be a $k$-tuple of vertices. $S$ is per definition a $k$-clique if \emph{all} or \emph{none} of its edges is existent.
+    Therefore, its probability of being either is given as
+    \begin{align}
+        P(S \text{is $k$-clique or $k$-independent set}) = 2 \cdot \frac{1}{2^{\binom{k}{2}}}.
+    \end{align}
+    The total number of $k$-subsets given $n$ vertices is given as $\binom{n}{k}$, so by basic properties of probability we see
+    \begin{align}
+        p \leq \binom{n}{k} \cdot \frac{1}{2^{\binom{k-1}{2}}} \leq \frac{n^k}{k!} 2^{1-\frac{k^2-k}{2}}
+    \end{align}
 \end{proof}
 
-\begin{note}
-    It's also possible to handle $M$ as a symbolic value, but this makes other things more complicated.
-\end{note}
-
-\begin{problem}
-Finding $M$ big enough can make $\LP$ hard to solve, because of matrix-inversions getting numerically unstable.
-\end{problem}
-
-\begin{proof}[Alternative proof of \autoref{thm:ip-model-union}]
-    Assume that we can bound each $x \in P_i$ by $u_i$, i.e. $x \leq u_i$  (note that this is basically a hidden big-$M$!).
-    Now we can disaggregate $x$ for each $P_i$ as its own private $x_i \in \realnum^k$, and analogously introduce $y_i \in \bool$ to restrict ourselves to one polyhedron:
-    \begin{mini*}{x}{w^Tx}{}{}
-        \addConstraint{A_ix_i}{\leq y_ib_i, \quad}{i=1,\dots,k}
-        \addConstraint{x_i}{\leq y_iu_i, \quad}{i=1,\dots,k}
-        \addConstraint{\sum_{i=1}^n y_i}{=1}
-        \addConstraint{\sum_{i=1}^n x_i}{=x}
-        \addConstraint{x,x_i}{\geq 0}
-    \end{mini*}
-    Again, exactly one $y_i$ is equal to $1$, forcing the other $x_j$ to be equal to $0$,
-    and thus setting $x$ to $x_i$.
-    We call this method \vocab[Big-M method!upper bound]{upper bound on $x$ Big-$M$}, short UBX.
+\begin{lemma}\label{thm:existence_rv}
+    Let $X$ be a discrete random variable over a set $\Omega$ with $\mathbb{E}[X]= \mu$.
+    Then, $P(X \geq \mu) > 0$ and $P(X \leq \mu) >0$.
+\end{lemma}
+\begin{proof}
+    Assume $P(X \geq \mu) = 0$.
+    Then $P(X = x) = 0$ for $x \geq \mu$.
+    By definition and assumption therefore
+    \begin{align}
+        \mathbb{E}[X] & = \sum_{x \in X(\Omega)}x P(X=x) = \sum_{x < \mu}x P(X=x)                   \\
+                      & < \sum_{x < X(\Omega)}\mu P(X=x) = \mu \sum_{x \in X(\Omega)} P(X=x) = \mu.
+    \end{align}
+    This is a contradiction!
 \end{proof}
+Consider now a different problem.
+\begin{definition}[Max-Cut]
+    Given a graph $G=(V,E)$, find a set $A$ maximizing the number of edges between $A$ and $V \setminus A$.
+    We call this the Maximum Cut Problem.
+\end{definition}
+\begin{theorem}
+    Given a graph $G = (V,E)$ with $|E|=m$.
+    There exists $A \subset V$ with at least $\frac{m}{2}$ cut size.
+\end{theorem}
+\begin{proof}
+    Choose $A$ uniformly over $\mathcal{P}(V)$, i.e. every node is chosen with probability $\frac{1}{2}$.
+    Then, every edge is with probability $\frac{1}{2}$ included in the cut,
+    which happens iff exactly one of the nodes of the edge is in $A$.
+    Let $X$ be the number of cut edges, and $X_e$ be the indicator variable for $e$ being in the cut.
+    By linearity of expectancy,
+    \begin{align}
+        \mathbb{E}[X]=\mathbb{E}\left[\sum_{e \in E}X_e\right]=\sum_{e \in E}\mathbb{E}[X_e]=m \cdot \frac{1}{2}.
+    \end{align}
+    Using \autoref{thm:existence_rv} there is positive probability for a choice of $A$ having cut size at least $m/2$.
+\end{proof}
+How can we use these results to actually construct a solution?
+\begin{definition}[Las-Vegas Algorithm]
+    Let $T$ be the run-time of an algorithm.
+    There are two basically equivalent definitions, i.e. we call a Las-Vegas Algorithm an algorithm which
+    \begin{enumerate}
+        \item always returns the correct answer
+              with $\mathbb{E}[T] \in \mathcal{O}(n^k)$, or
+        \item has runtime always in $\mathcal{O}(n^k)$ and returns a correct answer with probability at least $\delta$
+              (and otherwise none).
+    \end{enumerate}
+\end{definition}
 \begin{remark}
-    In general, it cannot be said if RHS or UBX is better.
-    Even though RHS only introduces $n$ new variables as opposed to UBX's $nk$ variables, UBX's disaggregated
-    formulation often is \emph{tighter} in the sense that the $\LP$ relaxation is closer to the integer hull.
+    The equivalence stems from the fact that the second variant can be seen as a geometric process:
+    Consider the number $T$ of attempts until the algorithm returns a correct result.
+    Then, $\mathbb{E}[T] = \frac{1}{1-\delta}$, so the total runtime is still $\mathcal{O}(n^k)$ in expectancy.
 \end{remark}
+Turning back to the Max-Cut problem, let us now develop an algorithm
+that constructively finds a set $A$ with a large cut (i.e. at least $\frac{m}{2}$).
+
+Interestingly, we do not even need a Las-Vegas algorithm to find a big cut.
+Instead, we can construct using probabilistic arguments a deterministic algorithm running in polynomial time.
+The idea is to greedily decide for each vertex if we want it in our cut set or not
+based on a case distinction using conditional expectation.
+\begin{theorem}
+    Given a graph $G = (V,E)$.
+    Let $A \sim \mathcal{U}_{\mathcal{P}(V)}$, $C_A$ the amount of cuts,
+    and $x_1, \cdots, x_n$ indicate the position of the corresponding vertex.
+    Then $\expect{C_A \mid x_1, \cdots, x_k}$ is the expected number of cuts given the positions
+    Then \autoref{algo:bigcut_det} satisfies following statements:
+    \begin{enumerate}
+        \item $\mathbb{E}[X_A \mid x_1, \cdots, x_k] \leq \mathbb{E}[X_A \mid x_1, \cdots, x_k, x_{k+1}]$
+        \item The algorithm runs in $\mathcal{O}(n+m)$
+              and returns a big cut of size at least $m/2$.
+    \end{enumerate}
+\end{theorem}
+First, have a look at our proposed algorithm:
+\begin{algorithm}[H]
+    \label{algo:bigcut_det}
+    \SetAlgoLined
+    $A \leftarrow \emptyset, B \leftarrow \emptyset$
+    \For{$k=1,\cdots,n$}{
+        \If{$|\{(v_k,u) \in E \mid u \in A\}| \leq |\{(v_k,u) \in E \mid u \in B\}|$}{
+            $A \leftarrow A + v_k$
+        }\Else {
+            $B \leftarrow B + v_k$
+        }
+    }
+    return $A$
+    \caption{Find Big-Cut of $G = (V,E)$}
+\end{algorithm}
+The
+\begin{proof}
+
+\end{proof}
+
+
+If we choose $A$ again uniformly distributed over $\mathcal{P}(A)$,
+then $P(X_A \geq \frac{m}{2}) = p$.
+
+Let us try to find a more meaningful way of expressing $p$:
+\begin{align}
+    \mathbb(E)[P(X_A \geq \frac{m}{2})] & = \frac{m}{2} = \sum_{i < \frac{m}{2}}i \cdot P(X_A = i) + \sum_{i \geq \frac{m}{2}}i \cdot P(X_A = i) \\
+                                        & \leq (\frac{m}{2} - 1)(1 - p) + mp
+\end{align}
+Therefore, $p \geq \frac{1}{\frac{m}{2} + 1}$.
+
+Let $v_1, \cdots, v_n$ be indicator variables for a vertex $k \in A$. Then for $k < n$
+\begin{align}
+    \mathbb{E}(X_A \mid v_1, \cdots, v_k) = \frac{1}{2}\mathbb{E}[X_A \mid v_1, \cdots, v_k, v_{k+1} = 1] + \frac{1}{2}\mathbb{E}[X_A \mid v_1, \cdots v_k, v_{k+1} = 0]
+\end{align}
+We can now greedily fix $v_{k+1}$ to be the choice with higher expectancy.
+$\leq \mathbb{E}(X_A \mid v_1, \cdots, v_k, v_{k+1})$
+\todo{Look up algo and finish section}
