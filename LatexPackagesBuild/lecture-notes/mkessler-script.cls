@@ -75,7 +75,7 @@
 \def\@lecturertitle{}
 \DeclareRobustCommand*{\lecturer}[2][]{
     \gdef\@lecturer{#2}
-    \gdef\@lecturertitle{\ifmkessler@script@english Lecturer\else\ifthenelse{\isempty{#1}}{Dozent}{Dozentin}\fi}{}
+    \gdef\@lecturertitle{\ifmkessler@script@english Lecturers\else\ifthenelse{\isempty{#1}}{Dozent}{Dozentin}\fi}{}
 }
 
 %Set the teaching assistants

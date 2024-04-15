@@ -1,5 +1,5 @@
 %! TEX root = ../../master.tex
-\lecture[Recap of basics.]{Tu 09 Apr 2024}{Introduction}
+\lecture[Probabilistic method. Derandomization.]{Tu 15 Apr 2024}{Probabilistic method}
 % \begin{orga}
 %      -----
 % \end{orga}
@@ -9,9 +9,9 @@ This section will introduce how probability can be used to solve problems that a
 Consider following combinatorial problem.
 \begin{definition}[Ramsay numbers]
     We define $R_k$ as the smallest integer $n$ such that any graph with $n$ vertices must contain either a clique or an independent set of size $K$.
-    We call $R_k$ the (symmetric) Ramsay numbers.
+    We call $R_k$ the (symmetric) \vocab{Ramsay numbers}.
 \end{definition}
-Let us first look at some examples to get some feeling.
+Let us first look at some examples to get a feel for what this section is about.
 \begin{example}
     \begin{itemize}
         The first few Ramsay numbers are given as
@@ -23,32 +23,39 @@ Let us first look at some examples to get some feeling.
               Indeed, with an ugly case distinction this is possible: If there are no cycles, the graph is bipartite, so there is an independent set of at least 3.
               Otherwise, there exists at least a 4-cycle, but no 3-cycle (i.e. chord-free).
               We can then select at least two independent nodes from the cycle, and if needed the missing third node from the non-cycle nodes such that they form an independent set.
-        \item $R_4 = 18$.
+        \item $R_4 = 18$. Trust me, we do not want the proof here.
         \item $R_5 \in [43, 48]$. The exact value is indeed still unknown!
     \end{itemize}
 \end{example}
-As we can see, even for small Ramsay numbers, it is not trivial to determine their value.
+As we can see, even for small $k$, it is not trivial to determine their Ramsay number.
+Instead, let us try to at least find some bound for their value.
 \begin{theorem}
     For every $k \geq 1$ holds $R_k > 2^{k/2}$.
 \end{theorem}
 \begin{proof}
-    Consider a uniform distribution over all graphs with $n$ vertices (i.e. an Erdös (random) graph $\mathcal{G}(n, \frac{1}{2})$).
+    Consider a uniform distribution over all graphs with $n$ vertices (i.e. the Erdős–Rényi random graph $\mathcal{G}(n, \frac{1}{2})$).
     Each edge in particular exists with probability $\frac{1}{2}$.
-    Now, have a look at $p \coloneqq P(G \sim \mathcal{G(n, \frac{1}{2})} \text{has a $k$-clique or $k$ independent set})$.
-    If we can show that this probability is less than 1, then this means there is an instance such that the property is \emph{not} satisfied,
+    Now, have a look at $p \coloneqq P(G \sim \mathcal{G}(n, \frac{1}{2}) \text{ has a $k$-clique or $k$ independent set})$.
+    If we can show that this probability $p$ is less than 1, then this means there is a graph with $n$ vertices such that the property is \emph{not} satisfied,
     and therefore $R_k > n$.
 
     Let $S$ be a $k$-tuple of vertices. $S$ is per definition a $k$-clique if \emph{all} or \emph{none} of its edges is existent.
-    Therefore, its probability of being either is given as
+    Therefore, its probability of being either one is given as
     \begin{align}
-        P(S \text{is $k$-clique or $k$-independent set}) = 2 \cdot \frac{1}{2^{\binom{k}{2}}}.
+        P(S \text{ is $k$-clique or $k$-independent set}) = 2 \cdot \frac{1}{2^{\binom{k}{2}}}.
     \end{align}
-    The total number of $k$-subsets given $n$ vertices is given as $\binom{n}{k}$, so by basic properties of probability we see
+    The total number of $k$-subsets given $n$ vertices is given as $\binom{n}{k}$, so by basic properties of probability 
+    and binomial coefficients we see
     \begin{align}
-        p \leq \binom{n}{k} \cdot \frac{1}{2^{\binom{k-1}{2}}} \leq \frac{n^k}{k!} 2^{1-\frac{k^2-k}{2}}
+        p \leq \binom{n}{k} \cdot \frac{1}{2^{\binom{k-1}{2}}} \leq \frac{n^k}{k!} 2^{1-\frac{k^2-k}{2}} 
     \end{align}
+    For $n = 2^{k/2}$ the right-hand side reduces to $\frac{2^{k+2}}{k!}$, which can be shown easily to be smaller than 1 for $k \geq 3$. 
 \end{proof}
+Notice how we suddenly imposed a probabilistic view on this presumably deterministic problem!
+This technique of using a suitable random model to demonstrate the existence and/or non-existence of certain properties
+is known as \vocab{Probabilistic Method}.
 
+Before we have a look at another example, we need following lemma.
 \begin{lemma}\label{thm:existence_rv}
     Let $X$ be a discrete random variable over a set $\Omega$ with $\mathbb{E}[X]= \mu$.
     Then, $P(X \geq \mu) > 0$ and $P(X \leq \mu) >0$.
@@ -63,12 +70,15 @@ As we can see, even for small Ramsay numbers, it is not trivial to determine the
     \end{align}
     This is a contradiction!
 \end{proof}
-Consider now a different problem.
+Consider following problem.
 \begin{definition}[Max-Cut]
     Given a graph $G=(V,E)$, find a set $A$ maximizing the number of edges between $A$ and $V \setminus A$.
-    We call this the Maximum Cut Problem.
+    We call this the \vocab{Maximum Cut Problem}.
 \end{definition}
-\begin{theorem}
+As it is usual in lectures of this kind, its canonical decision variant is indeed a NP-complete problem.
+Again, let us try instead to find a "good" cut.
+\begin{theorem}[Minimal Max-Cut]
+    \label{thm:minmaxcut}
     Given a graph $G = (V,E)$ with $|E|=m$.
     There exists $A \subset V$ with at least $\frac{m}{2}$ cut size.
 \end{theorem}
@@ -83,47 +93,44 @@ Consider now a different problem.
     \end{align}
     Using \autoref{thm:existence_rv} there is positive probability for a choice of $A$ having cut size at least $m/2$.
 \end{proof}
-How can we use these results to actually construct a solution?
+You might have noticed that these are non-constructive results, so naturally following question emerges:
+Can we use these results to construct a solution?
+Indeed, there is a simple answer!
 \begin{definition}[Las-Vegas Algorithm]
-    Let $T$ be the run-time of an algorithm.
-    There are two basically equivalent definitions, i.e. we call a Las-Vegas Algorithm an algorithm which
+    Let $T$ be the run-time of an algorithm and $n$ its input size.
+    We call a \vocab{Las-Vegas Algorithm} an algorithm which
     \begin{enumerate}
         \item always returns the correct answer
-              with $\mathbb{E}[T] \in \mathcal{O}(n^k)$, or
-        \item has runtime always in $\mathcal{O}(n^k)$ and returns a correct answer with probability at least $\delta$
-              (and otherwise none).
+              with $\mathbb{E}[T] \in \mathcal{O}(n^k)$ for some $k$, or
+        \item has runtime always in $\mathcal{O}(n^k)$ for some $k$, and returns a correct answer with probability at least $\delta > 0$
+              (and otherwise returns no answer).
     \end{enumerate}
 \end{definition}
 \begin{remark}
-    The equivalence stems from the fact that the second variant can be seen as a geometric process:
+    Both definitions are equivalent, which stems from the fact the second variant can be seen as a geometric process:
     Consider the number $T$ of attempts until the algorithm returns a correct result.
     Then, $\mathbb{E}[T] = \frac{1}{1-\delta}$, so the total runtime is still $\mathcal{O}(n^k)$ in expectancy.
 \end{remark}
-Turning back to the Max-Cut problem, let us now develop an algorithm
-that constructively finds a set $A$ with a large cut (i.e. at least $\frac{m}{2}$).
+Turning back to the Max-Cut problem, let us transform our result of \autoref{thm:minmaxcut} into a Las-Vegas algorithm.
+Simply generate $A$ randomly as constructed in the proof, and check if it has enough cut edges in polynomial time.
+The probability that this works is $P(X_A \geq \frac{m}{2}) = p$.
+However, this is just an abstract value - let us try to find a more meaningful way of expressing $p$:
+\begin{align}
+    \frac{m}{2} &= \expect{X_A} =  \sum_{i < \frac{m}{2}}i \cdot P(X_A = i) + \sum_{i \geq \frac{m}{2}}i \cdot P(X_A = i) \\
+    &\leq \left(\frac{m}{2} - 1\right)\sum_{i < \frac{m}{2}} P(X_A = i) + m \sum_{i \geq \frac{m}{2}} P(X_A = i) = \left(\frac{m}{2} - 1\right)(1 - p) + mp
+\end{align}
+Here we just upper-bound the corresponding first factors in each sum, and then use $P(X_A \geq \frac{m}{2}) = p$.
+Using some easy algebra, we deduce $p \geq \frac{1}{\frac{m}{2} + 1}$, so our Las-Vegas approach seems to get gradually worse the more edges our graph has.
 
-Interestingly, we do not even need a Las-Vegas algorithm to find a big cut.
-Instead, we can construct using probabilistic arguments a deterministic algorithm running in polynomial time.
-The idea is to greedily decide for each vertex if we want it in our cut set or not
-based on a case distinction using conditional expectation.
-\begin{theorem}
-    Given a graph $G = (V,E)$.
-    Let $A \sim \mathcal{U}_{\mathcal{P}(V)}$, $C_A$ the amount of cuts,
-    and $x_1, \cdots, x_n$ indicate the position of the corresponding vertex.
-    Then $\expect{C_A \mid x_1, \cdots, x_k}$ is the expected number of cuts given the positions
-    Then \autoref{algo:bigcut_det} satisfies following statements:
-    \begin{enumerate}
-        \item $\mathbb{E}[X_A \mid x_1, \cdots, x_k] \leq \mathbb{E}[X_A \mid x_1, \cdots, x_k, x_{k+1}]$
-        \item The algorithm runs in $\mathcal{O}(n+m)$
-              and returns a big cut of size at least $m/2$.
-    \end{enumerate}
-\end{theorem}
-First, have a look at our proposed algorithm:
+Interestingly, we do not even need a randomized algorithm to find a big cut.
+Instead, using probabilistic arguments we can construct a deterministic algorithm still running in polynomial time.
+This technique is known as \vocab{Derandomization}.
+\newline
 \begin{algorithm}[H]
     \label{algo:bigcut_det}
     \SetAlgoLined
-    $A \leftarrow \emptyset, B \leftarrow \emptyset$
-    \For{$k=1,\cdots,n$}{
+    $A \leftarrow \emptyset, B \leftarrow \emptyset$\\
+    \For{$k=1,\dots,n$}{
         \If{$|\{(v_k,u) \in E \mid u \in A\}| \leq |\{(v_k,u) \in E \mid u \in B\}|$}{
             $A \leftarrow A + v_k$
         }\Else {
@@ -133,26 +140,49 @@ First, have a look at our proposed algorithm:
     return $A$
     \caption{Find Big-Cut of $G = (V,E)$}
 \end{algorithm}
-The
+The idea is to greedily decide for each vertex if we want it in our cut set or not
+based on a case distinction using conditional expectation. 
+\begin{theorem}
+    Given a graph $G = (V,E)$.
+    Let $A \sim \mathcal{U}_{\mathcal{P}(V)}$, $C_A$ the amount of cuts,
+    and $x_1, \dots, x_n$ indicate if the vertices $v_1, \dots, v_n \in A$.
+    % Then $\expect{C_A \mid x_1, \cdots, x_k}$ is the expected number of cuts given the positions of the first $k$ vertices
+    Then \autoref{algo:bigcut_det} satisfies following statements:
+    \begin{enumerate}
+        \item $\expect{C_A \mid x_1, \dots, x_k} \leq \expect{C_A \mid x_1, \dots, x_k, x_{k+1}}$ after iteration $k+1$ of the for-loop 
+        (such that $x_i$ is fixed by the algorithm).
+        \item The algorithm runs in $\mathcal{O}(n+m)$
+              and returns a big cut of size at least $m/2$.
+    \end{enumerate}
+\end{theorem}
 \begin{proof}
+    Notice for $1\leq k < n$ by definition of conditional expectancy 
+    \begin{align*}
+        \expect{C_A \mid x_1, \dots, x_k} = \frac{1}{2} \expect{C_A \mid x_1, \dots, x_k, x_{k+1}=1} + \frac{1}{2} \expect{C_A \mid x_1, \dots, x_k, x_{k+1}=0}.
+    \end{align*}
+    So, at least one of the choices for $x_{k+1}$ satisfy the required lower bound for the conditional expectancy.
+    It remains to prove that our algorithm also chooses this value, i.e. the choice with larger condtional expectancy.
+    Let us observe how the expected number of cut edges can change if we fix the position of vertex $v_{k+1}$.
+    Consider following cases for an edge $e \in E$:
+    \begin{itemize}
+        \item $e$ does not contain $v_{k+1}$. Then, by indepence, the expected value of its Is-Cut-Edge indicator $X_e$ 
+        conditioned on all fixed vertices does not change by fixing $v_{k+1}$ (i.e $1$ or $0$ if both vertices are determined, else $\frac{1}{2}$).
+        \item $e$ contains $v_{k+1}$, but the other vertex is not fixed. Again, aforementioned expected value does not change since there is still a $\frac{1}{2}$
+        probability for the other vertex being in $A$.
+        \item $e$ contains $v_{k+1}$, but the other vertex \emph{is} fixed. Then we suddenly fix the value of $X_e$ 
+        depending on the choice of $x_{k+1}$.
+        In particular, this changes the conditional expectancy of $X_e$, increasing it to $1$ or decreasing it to $0$,
+        and therefore the conditional expectancy on the number of cut edges changes in the same way.
+    \end{itemize}
+    In summary, the change in conditional expectancy by fixing $x_{k+1}$ only depends on the neighborhood of fixed vertices of $v_{k+1}$.
+    If there are more neighbors that are fixed to be $A$ than not in $A$, then 
+    \begin{align*}
+        \expect{C_A \mid x_1, \dots, x_k, x_{k+1}=0} \geq \expect{C_A \mid x_1, \dots, x_k, x_{k+1}=1},
+    \end{align*}
+    otherwise the other way around, adhering to our algorithm design.
 
+    In fact, by induction it immediately follows that $\frac{m}{2} \leq \expect{X_A}\leq \expect{X_A \mid x_1, \dots, x_n}$ for 
+    $x_1, \dots, x_n$ being chosen according to the algorithm.
+    So, our algorithm works, and has mentioned runtime.
 \end{proof}
 
-
-If we choose $A$ again uniformly distributed over $\mathcal{P}(A)$,
-then $P(X_A \geq \frac{m}{2}) = p$.
-
-Let us try to find a more meaningful way of expressing $p$:
-\begin{align}
-    \mathbb(E)[P(X_A \geq \frac{m}{2})] & = \frac{m}{2} = \sum_{i < \frac{m}{2}}i \cdot P(X_A = i) + \sum_{i \geq \frac{m}{2}}i \cdot P(X_A = i) \\
-                                        & \leq (\frac{m}{2} - 1)(1 - p) + mp
-\end{align}
-Therefore, $p \geq \frac{1}{\frac{m}{2} + 1}$.
-
-Let $v_1, \cdots, v_n$ be indicator variables for a vertex $k \in A$. Then for $k < n$
-\begin{align}
-    \mathbb{E}(X_A \mid v_1, \cdots, v_k) = \frac{1}{2}\mathbb{E}[X_A \mid v_1, \cdots, v_k, v_{k+1} = 1] + \frac{1}{2}\mathbb{E}[X_A \mid v_1, \cdots v_k, v_{k+1} = 0]
-\end{align}
-We can now greedily fix $v_{k+1}$ to be the choice with higher expectancy.
-$\leq \mathbb{E}(X_A \mid v_1, \cdots, v_k, v_{k+1})$
-\todo{Look up algo and finish section}
