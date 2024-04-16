@@ -1,15 +1,17 @@
-![Live PDF status](https://github.com/Zyranix/CompStat-Lecture-Notes/actions/workflows/makefile.yml/badge.svg)
+![Live PDF status](https://github.com/Zyranix/ProbComp-Lecture-Notes/actions/workflows/makefile.yml/badge.svg)
 
-# Computational Statistics
-These are my lecture notes for the module 'Computational Statistics', taught by [Prof. Dr. Bernhard Y. Renard](http://www.renard.it/) in the summer term 2024 at Hasso-Plattner-Institut. There is no guarantee for completeness or correctness.
+# Probability and Computing
+These are my lecture notes for the module 'Probability and Computing', taught by the trio Sanuel Baguley, Andreas Goebel and Panagiotis Aivasiliotis in the summer term 2024 at Hasso-Plattner-Institut. There is no guarantee for completeness or correctness.
 
-- The homepage of the course can also be found [here](https://hpi.de/studium/im-studium/lehrveranstaltungen/data-engineering-ma/lehrveranstaltung/sose-24-4012-computational-statistics.html)
-- The [most recent version](https://zyranix.github.io/CompStat-Lecture-Notes/2024_CompStats.pdf) of this script is made available with Github Actions. You can also have a look at the [generated log files](https://zyranix.github.io/CompStat-Lecture-Notes/2024_CompStats.log)
+- The homepage of the course can also be found [here](https://hpi.de/friedrich/teaching/ss24/probcomp.html)
+- The [most recent version](https://zyranix.github.io/ProbComp-Lecture-Notes/2024_ProbComp.pdf) of this script is made available with Github Actions. You can also have a look at the [generated log files](https://zyranix.github.io/ProbComp-Lecture-Notes/2024_ProbComp.log)
 
 ## Set-up
 This set-up is largely inspired by Maximilian Keßler's set-up for lecture notes, but also includes some additional dirty changes in the `.sty`-files. Please refer to [this link](https://gitlab.com/latexci/packages/LatexPackages) for further details. Nonetheless, not all features of Maximilian's set-up are currently used. 
 
 It should suffice to clone this repo and use a fairly recent Tex-distribution. The code is tested with TexLive 2022 - note that e.g. the `apt`-distributed packages under Ubuntu (which is TexLive 2017) are **not** sufficient and a custom install of TexLive from their page is necessary!
+
+It should also be possible to clone this repo to Overleaf and adjust a few settings regarding compiling.
 
 Todo: Add tutorial of functionality (for now, refer to Max's repo, or reach out to me).
 

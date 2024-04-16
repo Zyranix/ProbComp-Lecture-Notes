@@ -111,7 +111,7 @@ config:
 
 #### CI stuff
 before-install:
-	@wget 'https://packages.oth-regensburg.de/ctan/macros/latex/contrib/IEEEtran/tools/IEEEtrantools.sty'
+	@wget 'https://mirrors.ctan.org/macros/latex/contrib/IEEEtran/tools/IEEEtrantools.sty'
 	@sudo chmod +x .ci/git-info-2.sh
 	@sudo ".ci/git-info-2.sh"
 
@@ -132,8 +132,8 @@ install-packages:
 
 generate-deploy:
 	@mkdir dist
-	@mv full.pdf dist/2024_CompStats.pdf
-	@mv full.log dist/2024_CompStats.log
+	@mv full.pdf dist/2024_ProbComp.pdf
+	@mv full.log dist/2024_ProbComp.log
 	@cd dist/
 	@tree -H '.' -I "index.html" -D --charset utf-8 -T "Computational Statistics" > index.html
 
