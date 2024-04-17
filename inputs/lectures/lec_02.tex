@@ -1,0 +1,123 @@
+%! TEX root = ../../master.tex
+\lecture[Probabilistic method using independent events. Locász local lemma.]{Mi 17 Apr 2024}{Independent events}
+% \begin{orga}
+%      -----
+% \end{orga}
+
+\section{Probabilistic method 2}
+\begin{definition}[$\SAT$ problem]
+    Given a boolean formula in $k$-CNF (conjunctive normal form).
+    The decision problem if there is an assignment that the formula is true is called $k$-$\SAT$.
+\end{definition}
+Assume we have a $k$-$\SAT$ instance $\phi$, and assume each variable appears in exactly one clause.
+Then it is possible to show $\phi \in \SAT$.
+\begin{example}
+    For $3$-$\SAT$ consider $(x_1 \OR x_2 \OR \NOT x_3) \AND (x_4 \OR \NOT x_5 \OR x_6)$.
+    Then, a valid assignment is $x_1 = x_2 = x_3 = 1, x_4=x_5=x_6=0$.
+\end{example}
+It is rather intuitive this statement must hold, since we enforce some form of indepence.
+This makes it interesting to look at from the lense of the probability, and its notion of indepence.
+
+So, let us assume a uniform random assignment $\alpha$ for such a $\phi$ (with $n$ clauses).
+Let $E_i$ be the event that clause $i$ is not satisfied by $\alpha$.
+Then, $\bigcup E_i$ is the event that $\phi$ is not satisfied by $\alpha$, and thus
+$\bigcap \overline{E_i}$ denotes $\phi$ being satisfied by $\alpha$.
+Similarly to previous applications of the probabilistic method we see that
+\begin{align}
+    P\left(\bigcap_{i=1}^n \overline{E_i}\right) = \prod_{i=1}^n P(\overline{E_i}) = \prod_{i=1}^{n}1 - 2^{-k} > 0
+\end{align}
+shows that there \emph{are} assignments that satisfy $\alpha$.
+However, we were now able to use indepence of $E_i$ in this case.
+
+While this example does not seem too spectacular at first, we can now try to leviate our conditions
+and only assume limited independence.
+Let us introduce a new construct.
+\begin{definition}[Dependency graph]
+    Consider a set of events $E_1, \dots, E_n$.
+    We call $G = (V,E)$ with $V= \{1, \dots, n\}$ the \vocab{Dependency Graph} if $E$ satisfies that
+    for every $E_i$ it holds that $\{E_j \mid (i,j) \neq E_i \}$ are mutually independent.
+\end{definition}
+
+\begin{lemma}
+    If events $E_1, \dots, E_n$ are mutually independent, then its counterparts $\overline{E_1}, \dots, \overline{E_n}$ are mutually independent.
+\end{lemma}
+Using these notions, we can now introduce a rather strong tool!
+\begin{lemma}[Symmetric \vocab{Loràsz Local Lemma}]
+    \label{thm:lll}
+    Let $E_1, \dots, E_n$ be a set of events and assume
+    \begin{enumerate}
+        \item $P(E_i) \leq p$ for some fixed $p$,
+        \item the maximum degree of the dependency graph of these events is $d$, and
+        \item $4dp \leq 1$.
+    \end{enumerate}
+    Then $P(\bigcap_{i=1}^n \overline{E_i}) > 0$.
+\end{lemma}
+The proof is rather technical, but the main idea is to use two nested inductions,
+and rewrite our result as a fancy product using conditional probabilities.
+\begin{proof}
+    Let $S \subseteq \{1, \dots, n\}$.
+    We will show by induction on the size $s$ of $S$ that for all $k \not \in S$ it holds
+    \begin{align}
+        P(E_k \mid \bigcup_{j \in S} \overline{E_j}) \leq 2p.
+    \end{align}
+    For the base case $s=0$ by assumption $P(E_k) \leq p \leq 2p$.
+
+    For the induction step we first need to show $P(\bigcap_{j \in S} \overline{E_j}) > 0$.
+    Again, we use another induction.
+    For $s=1$ this is clear by assumption. (Notice $p < 1$).
+    Now, w.l.o.g. let $S=\{1,\dots, s\}$.
+    By definition of conditional expectancy,
+    \begin{align*}
+        P(\bigcap_{j \in S} \overline{E_j}) & = P(\overline{E_s} \mid \bigcap_{j = 1}^{s-1} \overline{E_j}) \cdot P(\bigcap_{i=1}^{s-1}\overline{E_j})                                                                                                   \\
+                                            & = \underbrace{\left(1 - P(E_s \mid \bigcap_{j = 1}^{s-1}\overline{E_j})\right)}_{>0 \text{ by outer induction}}\cdot \underbrace{P(\bigcap_{i=1}^{s-1}\overline{E_j})}_{>0 \text{ by inner induction}} > 0
+    \end{align*}
+    This concludes the inner induction, so let us continue with the outer induction step.
+    Let us split $S$ into $S_1= \{j \in S \mid (k,j) \in E\},S_2 = S \setminus S_1$.
+    Denote with $F_k = \bigcup_{i=1}^k \overline{E_k}$.
+    Then
+    \begin{align*}
+        P(E_k \mid F_s) = \frac{P(E_k \cap F_s)}{P(F_s)} = \frac{P(E_k \cap F_{S_1} \cap F_{S_2})}{P(F_{S_1} \cap F_{S_2})} = \frac{P(E_k \cap F_{S_1} \mid F_{S_2})}{P(F_{S_1} \mid F_{S_2})}
+    \end{align*}
+    Consider both parts of the final fraction, and let us bound them:
+    \begin{align*}
+        P(E_k \cap F_{S_1} \mid F_{S_2}) & \leq P(E_k \mid F_{S_2}) \leq p                                                                                              \\
+        P(F_{S_1} \mid F_{S_2})          & = 1 - P(\overline{F_{S_1}} \mid F_{S_2}) = 1 - P(\bigcup_{i \in S_{1}}E_i \mid F_{S_2})                                      \\
+                                         & \geq 1- \sum_{i \in S_1} P(E_i \mid \bigcap_{j \in S_2}\overline{E_j}) \geq 1 - |S_1| \cdot 2p \geq 1 - 2pd \geq \frac{1}{2}
+    \end{align*}
+    Applying these results yields $2p$ as an upper bound for $P(E_k \mid F_s)$, which also concludes the outer induction.
+
+    Continuing with the actual statement, we get
+    \begin{align*}
+        P(\bigcap_{i=1}^n \overline{E_i}) = P(\overline{E_n} \mid \bigcap_{i=1}^{n-1} \overline{E_i}) \cdot P(\bigcap_{i=1}^{n-1} \overline{E_i}) =\prod_{i=1}^n P(\overline{E_i} \mid \bigcap_{j=1}^{i-1} \overline{E_i}) \geq (1-2p)^{n} > 0.
+    \end{align*}
+
+
+\end{proof}
+Turning back to our $k$-$\SAT$ problem, we are now able to show a stronger version.
+\begin{theorem}
+    Given a $k$-$\SAT$ instance $\phi$ (with $n$ clauses), and
+    assume that no variable appears in more than $\frac{2^k}{4k}$ clauses.
+    Then, $\phi \in \SAT$.
+\end{theorem}
+\begin{proof}
+    We motivate \autoref{thm:lll}.
+    Firstly, we see $P(E_i) \leq 2^{-k}$.
+    For each vertex of the dependency graph its degree is at most $\frac{2^k}{4k}\cdot k$.
+    Therefore, $4 \cdot 2^{-k} \cdot \frac{2^k}{4k}k \leq 1$, and $P(\bigcap_{i=1}^n \overline{E_i}) > 0$ implies the existence of a valid assignment.
+\end{proof}
+Some more applications.
+\begin{theorem}
+    Assume $n$ pairs of vertices need to be connected using $n$ disjoint paths on
+    a given network $E$.
+    Each pair $i$ can choose from a collection $F_i$ of $m$ paths.
+    If any path in $F_i$ shares edges by at most $k$ paths in $F_j$
+    and $\frac{8nk}{m} \leq 1$, then we can always choose an edge-disjoint collection of paths.
+\end{theorem}
+\begin{proof}
+    Consider a probability space where every pair $i$ chooses a path in $F_i$ uniformly distributed, i.e. with probability $1/m$.
+    We define $E_{i,j}$ as the "bad" event that paths $i,j$ share any edges,
+    which occurs with probability $k/m$.
+    The degree of the corresponding dependency graph then is $2n$.
+    By \autoref{thm:lll}, we are done.
+
+\end{proof}
