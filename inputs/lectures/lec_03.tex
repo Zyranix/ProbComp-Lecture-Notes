@@ -1,0 +1,102 @@
+%! TEX root = ../../master.tex
+\lecture[Random graphs.]{Mo 22 Apr 2024}{Random graphs}
+\section{Random graphs}
+In this section we want to try answer following question.
+\begin{question}
+    What does the "average" graph look like?
+\end{question}
+We can introduce two notions for distributions over graphs.
+\begin{definition}
+    \begin{enumerate}
+        \item The $\mathcal{G}_{n,m}$ model is a probability distribution over $\mathcal{G}$
+              given by a uniform distribution over all graphs with $n$ nodes and $m$ edges.
+        \item The $\mathcal{G}_{n,p}$ model is a probability distribution over $\mathcal{G}$
+              for graphs with $n$ nodes such that the existence of every edge is drawn with probability $p$.
+    \end{enumerate}
+\end{definition}
+However, for our goals it is easier to work with the second notion.
+If $G \sim \mathcal G_{n,p}$, then $\expect{|E(G)|} = \binom{n}{2}p$.
+
+\begin{lemma}
+    For all $G \sim \mathcal G_{n,p}, G' \sim \mathcal G_{n,m}$ it holds that
+    for any graph $H$
+    \begin{align}
+        P(H = G \mid |E(H)| = m) = P(H = G')
+    \end{align}
+\end{lemma}
+\begin{proof}
+    Using some simple transformations and thinking about the probabilities of our graphs we see
+    \begin{align*}
+        P(H = G \mid E(H) = m) & = \frac{P(H =G \cap E(H) = m)}{P(E(H) = m)} = \frac{P(H=G)}{P(E(H)) = m}             \\
+                               & = \frac{p^m(1-p)^{\binom{n}{2}-m}}{\binom{\binom{n}{2}}{m}}p^m(1-p)^{\binom{n}{2}-m} \\
+                               & = \frac{1}{\binom{\binom{n}{2}}{m}} = P(H = G')
+    \end{align*}
+\end{proof}
+This gives us the ability to try prove well-known graph problems on random graphs.
+For example, we can ask outselves if $G \sim \mathcal{G}_{n,p}$ contains $K_4$.
+Consider $C \subseteq V(G)$ such that $|C| = 4$, and let $X_c$ be the indicator variable if $G[C] = K_4$.
+Furthermore, let $X$ be the numbe of 4-cliques in $G$.
+
+We easily see that $P(X_C = 1) = p^6 = \expect{X_C}$, and
+$\expect{X} = \binom{n}{4} p^6 \in \theta (n^4p^6)$.
+Therefore
+\begin{itemize}
+    \item $p << n^{-2/3}$ implies $\expect{X} \longrightarrow_{n \rightarrow \infty} 0$, and
+    \item $p >> n^{-2/3}$ implies $\expect{X} \longrightarrow_{n \rightarrow \infty} \infty$.
+\end{itemize}
+What happens though in the case of equality, i.e $p(n) = n^{-2/3}$?
+
+\begin{definition}
+    We call $f(n)$ a \vocab{Threshold} for a property $Q$ in $\mathcal{G}_{n,p}$ if
+    \begin{itemize}
+        \item $p >> f(n)$ implies $P(G \sim \mathcal G_{n,p} \text{ has } Q) \longrightarrow_{n \rightarrow \infty} 1$,
+        \item $p << f(n)$ implies $P(G \sim \mathcal G_{n,p} \text{ has } Q) \longrightarrow_{n \rightarrow \infty} 0$.
+    \end{itemize}
+\end{definition}
+Let us show $p(n) = n^{-2/3}$ is a threshold for the existence of a 4-clique.
+\begin{enumerate}
+    \item Case $p << n^{-2/3}$: Then using Markov's inequality we immediately see
+          \begin{align}
+              P(X > 0) = P(X \geq 1) \leq \frac{\expect{X}}{1} \longrightarrow_{n \rightarrow \infty} 0.
+          \end{align}
+    \item Case $p >> n^{-2/3}$: Then using Tschebychev's inequality we see
+          \begin{align}\label{eq:threshold_k4}
+              P(X = 0) \leq P(|X - \expect{X}| \geq \expect{X}) \leq \frac{\variance{X}}{\expect{X}^2}.
+          \end{align}
+          Having a closer at the variance by smart reordering, we conclude
+          \begin{align*}
+              \variance{X} & = \expect{X^2} - \expect{X}^2 = \expect{\left(\sum_C X_C\right)^2} - \expect{\sum_C X_C}^2                                         \\
+                           & = \sum_C \left(\expect{ X_C^2} - \expect{X_C}^2 \right) + \sum_{C \neq D}\left( \expect{X_CX_D} - \expect{X_C} \expect{X_D}\right) \\
+                           & = \sum_C \variance{X_C} + \sum_{C \neq D} \covar{X_C, X_D}
+          \end{align*}
+          It suffices to show that both sums independently tend to 0 for $n \rightarrow \infty$ if divided by $\expect{X}^2$ as seen in \eqref{eq:threshold_k4}.
+
+          Notice $\variance{X_C} = \expect{X_C^2} - \expect{X_C}^2 \leq \expect{X_C^2} = p^6$,
+          so taken over all $\binom{n}{4}$ instances of $C$ the first sum has its upper bound in $\Theta(n^4p^6) \subseteq \Theta(n^8)$.
+          Since $\expect{X}^2 = p^{12} >> n^{-8}$, the first sum converges indeed to $0$ for $n \rightarrow \infty$.
+
+          For the second sum, we need a case distinction over the overlap of $C$ and $D$.
+          Notice that we only need to consider $\expect{X_CX_D} \geq \covar{X_C,X_D}$.
+          \begin{itemize}
+              \item $|C \cap D| \leq 1$: Then $\covar{X_C,X_D} = 0$.
+              \item $|C \cap D| = 2$: Then $\expect{X_CX_D}=P(X_CX_D = 1) = p^{11}$.
+                    This happens $\binom{n}{6}\binom{6}{4}\binom{4}{2} \in \Theta(n^6)$-times.
+              \item $|C \cap D| = 3$: Then $\expect{X_CX_D}=p^{9}$.
+                    This happens $\binom{n}{5}\binom{5}{4}\binom{4}{3} \in \Theta(n^5)$-times.
+          \end{itemize}
+          Analoguously, this concludes the convergence.
+\end{enumerate}
+
+Another interesting property is the largest connected component of a random graph.
+\begin{theorem}
+    For $G \sim \mathcal{G}_{n,p}$ it holds that $f(n) \coloneqq \frac{1}{n}$ is a threshold for
+    $G$ having a connected component of size $\Theta(n)$.
+    Furthermore, for $p = \frac{c}{n}$, it holds that
+    \begin{align*}
+        \text{Largest connected component is } \begin{cases}
+                                                   \Theta(\log n)          , & c < 1 \\
+                                                   \Theta(n^{\frac{2}{3}}) , & c = 1 \\
+                                                   \Theta(n)               , & c > 1 \\
+                                               \end{cases}
+    \end{align*}
+\end{theorem}
