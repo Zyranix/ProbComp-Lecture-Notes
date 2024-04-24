@@ -60,9 +60,9 @@
 
 \define@choicekey*{mkessler-fancythm}{mkessler@fancythm@numbersmallenvironments}[\val\nr]{no,section,theorem}{%
     \ifcase\nr\relax
-    \mkessler@fancythm@numbersmallenvironmentsfalse
+        \mkessler@fancythm@numbersmallenvironmentsfalse
     \or
-    \mkessler@fancythm@numbersmallenvironmentstrue
+        \mkessler@fancythm@numbersmallenvironmentstrue
         %numbering small environments within sections is forbidden whilst using lecturenumbes
         \ifmkessler@fancythm@lecturenumbers
             \mkessler@fancythm@numbersmallenvironmentswiththeoremtrue
@@ -253,6 +253,7 @@
     \declaresmalltheorem[Lob]{thmgoldmargin}{praise}
     \declaresmalltheorem[Trivial Nonsense][Trivial Nonsense]{thmyellowmargin}{trivial}
     \declaresmalltheorem[Frage]{thmblackmarginandfill}{question}
+    \declaresmalltheorem[Vermutung]{thmblackmarginandfill}{conjecture}
     \declaresmalltheorem[Offene Frage][Open Question]{thmblackmarginandfill}{openquestion}
     \declaresmalltheorem[Organisatorisches][Organisational stuff]{thmblackmargin}{orga}
     \declaresmalltheorem[Fakt]{thmredmargin}{fact}
@@ -272,21 +273,21 @@
     %%%%%%%% Other mdframed style boxes
 
     \newtcolorbox{recap}{before skip = 0.5cm, after skip = 0.5cm, enhanced, sharp corners = all, colback = white, colframe = gray, toprule=0pt, bottomrule=0pt, leftrule=0pt,rightrule=0pt, overlay = {
-            \draw[gray, line width = 2pt] (frame.north west) -- ++(0.5cm, 0pt);
-            \draw[gray, line width=2pt] (frame.south east) -- ++(-0.5cm, 0pt);
-            \draw[gray, line width=2pt] (frame.north west) -- ++ (0pt, -0.5cm);
-            \draw[gray, line width=2pt] (frame.south east) -- ++(0pt, 0.5cm);
-    }}
+                \draw[gray, line width = 2pt] (frame.north west) -- ++(0.5cm, 0pt);
+                \draw[gray, line width=2pt] (frame.south east) -- ++(-0.5cm, 0pt);
+                \draw[gray, line width=2pt] (frame.north west) -- ++ (0pt, -0.5cm);
+                \draw[gray, line width=2pt] (frame.south east) -- ++(0pt, 0.5cm);
+            }}
 
     \newenvironment{moral}{%
         \begin{mdframed}[linecolor=green!70!black]%
-        \bfseries\color{green!50!black}}%
-        {\end{mdframed}}
+            \bfseries\color{green!50!black}}%
+            {\end{mdframed}}
 
     \newenvironment{antimoral}{%
         \begin{mdframed}[linecolor=red!70!black]%
-        \bfseries\color{red!50!black}}%
-        {\end{mdframed}}
+            \bfseries\color{red!50!black}}%
+            {\end{mdframed}}
 
 
     %%%%%%%%%%%% Non-mdframed theorems
@@ -294,7 +295,7 @@
     \theoremstyle{plain}
     \newtheorem{variant}{\ifmkessler@fancythm@english Variant\else Variante\fi}
     \newtheorem*{assumption}{\ifmkessler@fancythm@english Assumption\else Annahme\fi}
-    
+
     \theoremstyle{definition}
     \newtheorem*{note}{\ifmkessler@fancythm@english Note\else Anmerkung\fi}
     \newtheorem*{warning}{\color{red}\ifmkessler@fancythm@english Warning\else Warnung\fi}

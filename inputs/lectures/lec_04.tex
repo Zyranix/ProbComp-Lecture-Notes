@@ -1,0 +1,103 @@
+%! TEX root = ../../master.tex
+\lecture[Largest clique in random graphs. Random $\SAT$.]{Mi 24 Apr 2024}{More random graph properties}
+\begin{theorem}
+    In almost every $G \sim \mathcal{G}_{n, \frac{1}{2}}$, the largest clique has size approximately $2 \log_2(n)$.
+\end{theorem}
+\begin{proof}[Proof sketch]
+    Let $X_k$ be the number of $k$-cliques in $G \sim \mathcal{G}_{n, \frac{1}{2}}$.
+    As previously shown for 4-cliques, we easily generalize
+    \begin{align*}
+        g(k) \coloneqq \expect{X_k} = \binom{n}{k}2^{-\binom{k}{2}}.
+    \end{align*}
+    Let $K_0(n)$ be the largest $k$ such that $g(k) \geq 1$.
+    If we show $K_0(n) \approx 2 \log n$, then $g(k) \approx 2^{k\log n - k^2/2}$.
+    Furthermore, let $c$ be a constant (to be determined later), and
+    \begin{align}
+        K_1(n) \coloneqq K_0(n) - c,\qquad K_2(n) \coloneqq K_0(n) + c.
+    \end{align}
+    We will show that
+    \begin{align}
+        P(X_{K_1(n)} > 0) \xrightarrow{n \rightarrow \infty} 1, \label{eq:ugly_probK1} \\
+        P(X_{K_2(n)} > 0) \xrightarrow{n \rightarrow \infty} 0. \label{eq:ugly_probK2}
+    \end{align}
+    One can show (we just believe it) that
+    \begin{align}
+        \expect{X_{K_1}} \xrightarrow{n \rightarrow \infty} \infty, \label{eq:ugly_expectK1} \\
+        \expect{X_{K_2}} \xrightarrow{n \rightarrow \infty} 0. \label{eq:ugly_expectK2}
+    \end{align}
+
+    Apparently following part gives us some intuition for that?
+    \begin{align}
+        \frac{g(k+1)}{g(k)} = \frac{\binom{n}{k+1}2^{-\binom{k+1}{2}}}{\binom{n}{k}2^{-\binom{k}{2}}}
+        = \frac{n-k}{k+1}\cdot 2^{-k},
+    \end{align}
+    so for $k \approx 2 \log n$ this is approximately
+    \begin{align}
+        \frac{g(k+1)}{g(k)} \approx \frac{n}{2 \log n}n^{-2} \xrightarrow{n \rightarrow \infty} 0.
+    \end{align}
+
+    Using Markov's inequality (\vocab{First Moment Method}) we conclude
+    \begin{align}
+        P(X_{K_2(n)} \geq 1) \leq \frac{\expect{X_{K_2}}}{1} \xrightarrow{n \rightarrow \infty} 0.
+    \end{align}
+    which shows \eqref{eq:ugly_probK2}.
+    Using Tschebychev's inequality (\vocab{Second Moment Method}) we can show
+    \begin{align} \label{eq:ugly_proof_1}
+        P(X_{K_1(n)} = 0) \leq P(|X_{K_1} - \expect{X_{K_1}}| \geq \expect{X_{K_1}}) \leq \frac{\variance{X_{K_1}}}{\expect{X_{K_1}}^2} \xrightarrow{n \rightarrow \infty} 1.
+    \end{align}
+    To show the limit actually holds, we use the same decomposition trick as in \todo{ref}:
+    \begin{align}
+        \variance{X_{K_1}} = \variance{\sum_S X_S} & = \sum_S \variance{X_S} + \sum_{S \neq D} \covar{X_S,X_D}
+    \end{align}
+    Let us define $S \vDash D$ if $|S \cap D| \geq 2$.
+    We simplify further
+    \begin{align*}
+        \sum_S \variance{X_S} + \sum_{S \neq D} \covar{X_S,X_D} & = \sum_S \variance{X_S} + \sum_{S \vDash D} \covar{X_S,X_D}    \\
+                                                                & \leq \sum_S \expect{X_S^2} + \sum_{S \vDash D} \expect{X_SX_D} \\
+                                                                & = \sum_S \expect{X_S} + \sum_{S \vDash D} \expect{X_SX_D}      \\
+                                                                & = \expect{X_{K_1}} + \sum_{S \vDash D} \expect{X_SX_D}.
+    \end{align*}
+    Notice that we divide this term by $\expect{X_{K_1}}^2$ in \eqref{eq:ugly_proof_1},
+    so the first summand of previous result reduces to $1/\expect{X_{K_1}}$ which tends to 0 by \eqref{eq:ugly_expectK1}.
+
+    For the second sum, using even more reordering and conditional probabilities
+    \begin{align*}
+        \sum_{S \vDash D} \expect{X_SX_D} & = \sum_{S \vDash D} P( X_S = 1 \cap X_D = 1) = \sum_{S \vDash D} P( X_S = 1 \mid X_D = 1)P(X_D=1)    \\
+                                          & = \sum_D P(X_D=1) \left(\sum_{S: S \vDash D} P(X_S=1 \mid X_D=1)\right)                              \\
+                                          & = \sum_D P(X_D=1) \left(\sum_{S: S \vDash D_0} P(X_S=1 \mid X_{D_0}=1)\right) \text{ for fixed } D_0 \\
+                                          & = \sum_{S: S \vDash D_0} P(X_S=1 \mid X_{D_0}=1) \cdot \sum_D P(X_D=1)                               \\
+                                          & = \sum_{S: S \vDash D_0} P(X_S=1 \mid X_{D_0}=1) \cdot \expect{X_{K_1}}.
+    \end{align*}
+    The factor vanishes after dividing by $\expect{X_{K_1}}$, so we only remain with one last sum.
+    \begin{align*}
+        \sum_{S: S \vDash D_0} P(X_S=1 \mid X_{D_0}=1) = \sum_{i=2}^{K_1 - 1}2^{-\binom{K_1}{2} + \binom{i}{2}}\binom{n - K_1}{K_1 - i}\binom{K_1}{i}
+    \end{align*}
+    Dividing by the second $\expect{X_{K_1}}$ using some binomial magic we conclude
+    \begin{align}\label{eq:ugly_k1max}
+        \frac{\sum_{S: S \vDash D_0} P(X_S=1 \mid X_{D_0}=1)}{\expect{X_{K_1}}} = \sum_{i=2}^{K_1 - 1} \underbrace{2^{\binom{i}{2}} \frac{\binom{K_1}{i}\binom{n - K_1}{K_1 - i}}{\binom{n}{K_1}}}_{\coloneqq f(i)} \leq K_1 \max_{2 \leq i \leq K_1 - 1} f(i)
+    \end{align}
+    For our previously introduced $c$, if chosen large enough, then the maximum is reached for $i=2$, thus
+    \begin{align*}
+        f(2) = \frac{K_1!}{(K_1-2)!}\cdot \frac{K_1!}{(K_1-2)!} \cdot \frac{(n-K_1)!(n-K_1)!}{n!(n-2K_1-2)!} \approx \frac{K_1^2K_1^2}{n^2}
+    \end{align*}
+    and we upper bound \eqref{eq:ugly_k1max} by
+    \begin{align*}
+        \frac{K_1^5}{n^2} \approx \frac{\log n^5}{n^2} \xrightarrow{n \rightarrow \infty} 0
+    \end{align*}
+    showing \eqref{eq:ugly_probK1} and concluding this wonderful proof.
+\end{proof}
+Let us find a notion for randomizing $k-\SAT$.
+\begin{conjecture}
+    For all $k$ there exists a threshold value $r_k^\star \in \realnum$
+    such that
+    \begin{align}
+        P( \phi_k(n,m) \in \SAT) \xrightarrow{n \rightarrow \infty}
+        \begin{cases}
+            0, & r > r_k^\star \\
+            1, & r < r_k^\star \\
+        \end{cases}.
+    \end{align}
+\end{conjecture}
+\begin{note}
+    We know that $3.52 \leq r_3^\star \leq 4.51$.
+\end{note}
