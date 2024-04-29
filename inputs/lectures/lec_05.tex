@@ -1,0 +1,105 @@
+%! TEX root = ../../master.tex
+\lecture[Azuma's inequality. McDiarmid's inequality. Applications.]{Mi 24 Apr 2024}{Martingales and Concentration}
+\section{Martingales and Concentration}
+In this section we study "bounds" of random variables.
+\begin{definition}[\vocab{Bounds}]
+    We introduce several notions.
+    \begin{itemize}
+        \item A \vocab{Tail Bound} is an upper bound for $P(X \geq a)$ given that $X$ is non-negative.
+        \item A \vocab{Deviation Inequality} is an upper bound on $P(|X-a| \geq \eps)$
+              where $\eps$ usually denotes $\expect{X}$.
+    \end{itemize}
+\end{definition}
+Let us introduce an important inequality.
+\begin{theorem}[\vocab{Azuma's Inequality}]
+    Let $X$ be a martingale with $X_0 = 0$.
+    Suppose that $|X_{n+1} - X_n| \leq 1$ for all $n$.
+    Then, for any $\lambda > 0$, it holds that
+    \begin{align}
+        P(X_n \geq \lambda) \leq \exp{\frac{-\lambda^2}{2n}},
+    \end{align}
+    and equivalently
+    \begin{align}
+        P(X_n \geq \lambda \sqrt{n}) \leq \exp{\frac{-\lambda^2}{2}},
+    \end{align}
+\end{theorem}
+\begin{proof}[Proof sketch]
+    By properties of a Martingale,
+    \begin{align}
+        P(X_n \geq \lambda) \leq P(\exp{X_nt} \geq \exp{t\lambda}) \leq \expect{\exp{tX_n}}\exp{-t\lambda}.
+    \end{align}
+    Consider the telescopic augmentation $X_n = \sum_{i=1}^n (X_i - X_{i-1})$
+    and let us apply it to the previous expected value,
+    \begin{align}
+        \expect{\exp{tX_n}} & = \expect{\underbrace{\exp{t \sum_{i=1}^n (X_i - X_{i-1})}}_{\coloneqq F_n}} = \expect{\prod_{i=1}^{n}\exp{t(X_i - X_{i-1})}} \\
+                            & = \expect{\prod_{i=1}^{n-1}F_{i-1}}\expect{\exp{t(X_i - X_{i-1})} \mid F_{i-1} }
+    \end{align}
+    Notice that $0 \leq \expect{\exp{t(X_i - X_{i-1})} \mid F_{i-1} } \leq \exp{\frac{t^2}{2}}$,
+    so using \autoref{thm:hoeffding} on this conditional expected value yields
+    \begin{align}
+        \expect{\exp{t(X_i - X_{i-1})} \mid F_{i-1} } \leq \exp\left(t\expect{X_n- X_{n-1} \mid F_{n-1} + \frac{t^2}{2}}\right) = \exp\left(\frac{t^2}{2}\right).
+    \end{align}
+    Notice that we used the Martingale properties in the last step.
+\end{proof}
+\begin{lemma}[\vocab{Hoeffding's Lemma}] \label{thm:hoeffding}
+    If $Y$ is a random variable bounded with $a \leq Y \leq b$, then
+    \begin{align}
+        \expect{\exp{tY}} \leq \exp{t\expect{Y} + \frac{t^2(b-a)^2}{8}}.
+    \end{align}
+\end{lemma}
+We omit the proof for brevity. Roughly, the idea is to work with hyperbolic functions.
+
+Notice that this version of Azuma's inequality uses quite restrictive requirements,
+which we in fact do not need.
+Instead, let us formulate following generalization which now allows for more dynamic step sizes and arbitrary start values.
+\begin{theorem}
+    If $X$ is a martingale and $|X_{n+1} - X_n| \leq a_n$ for all $n$, then
+    \begin{align}
+        P(|X_n - X_0| \geq \lambda) \leq 2 \exp\left(\frac{-\lambda^2}{2 \sum_{i=1}^{n}a_i^2}\right)
+    \end{align}
+\end{theorem}
+We omit the proof, but it is quite analoguos.
+
+Let us introduce following notion for continuity.
+\begin{definition}[Lipschitz condition]
+    Given a function $f : \realnum^n \rightarrow \realnum$.
+    If there exists a $C \in \realnum$ such that for any $x,y \in \realnum^n$ whose values only differ in one place holds that
+    \begin{align}
+        |f(x) - f(y)| \leq C
+    \end{align}
+    we say $f$ satisfies the \vocab{Lipschitz Condition}.
+\end{definition}
+The Lipschitz condition intuitively tries to limit the derivative in every point of $f$.
+In fact, one can show that this is an even stronger condition than "regular" continuity.
+\begin{theorem}[\vocab{McDiarmid's Inequality}] \label{thm:mcdiarmid}
+    Let $X$ be a stochastic process, and $f : \realnum^n \rightarrow \realnum$ a function satisfying the Lipschitz condition.
+    Then, for the \vocab{Doob Martingale}\footnote{The fact that $Z$ is indeed a martingale is a classical result.} defined as
+    \begin{align}
+        Z_k = \expect{f(X_1, \dots, X_n) \mid \bigotimes_{i=1}^k X_i}
+    \end{align}
+    we have
+    \begin{align}
+        P(|Z_k - Z_0| \geq \lambda) \leq 2\exp\left(\frac{-\lambda^2}{kc^2}\right)
+    \end{align}
+\end{theorem}
+Again, we omit the proof, since it does not contain any exciting ideas.
+
+We now turn to some applications of these results.
+In the context of bioinformatics, DNA sequences are the most important research topic.
+It might be useful to treat such sequences as random strings, and find interesting patterns in it.
+\begin{problem}[Pattern matching]
+Find \emph{interesting} substrings of some given random string following an arbitrary unknown distribution.
+We say a substring is \emph{interesting} if it occurs more often than it would if the random string followed a uniform distribution.
+\end{problem}
+Let $N$ be the number of occurences of a fixed substring $B=(B_1, \dots, B_k)$ in the random string $X = (X_1, \dots, X_n)$ given the underlying alphabet $\eta$ with $s \coloneqq |\eta|$.
+If $X$ is drawn uniformly, we can easily calculate the expected number of occurences of $B$ as
+\begin{align}
+    \expect{N} & = \expect{\sum_{i=1}^{n-k+1} \mathbb{1}(X_i = B_i, \dots, X_{i+k} = B_k)} \\
+               & = P\left(X_i = B_i, \dots, X_{i+k} = B_k\right) = (n-k+1)\frac{1}{s^k}.
+\end{align}
+Let us now treat $N : \realnum^n \rightarrow \realnum$ as a function.
+Then $|N(x) - N(y)| \leq k$, and define the Doob martingale $Z_k \coloneqq \expect{N \mid \bigotimes_{i=1}^k X_i}$.
+This allows us to apply \autoref{thm:mcdiarmid}, and deduce
+\begin{align}
+    P(|Z_n - Z_0| \geq \lambda) = P(|N - \expect{N}| \geq \lambda) \leq 2\exp\left(\frac{-2\lambda}{nk^2}\right).
+\end{align}
