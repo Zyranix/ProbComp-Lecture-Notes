@@ -1,5 +1,5 @@
 %! TEX root = ../../master.tex
-\lecture[Probabilistic method using independent events. Locász local lemma.]{Mi 17 Apr 2024}{Independent events}
+\lecture[Probabilistic method using independent events. Lovász local lemma.]{Mi 17 Apr 2024}{Independent events}
 % \begin{orga}
 %      -----
 % \end{orga}
@@ -35,14 +35,14 @@ Let us introduce a new construct.
 \begin{definition}[Dependency graph]
     Consider a set of events $E_1, \dots, E_n$.
     We call $G = (V,E)$ with $V= \{1, \dots, n\}$ the \vocab{Dependency Graph} if $E$ satisfies that
-    for every $E_i$ it holds that $\{E_j \mid (i,j) \neq E_i \}$ are mutually independent.
+    every $E_i$ is mutually independent of the set $\{E_j \mid (i,j) \neq E_i \}$.
 \end{definition}
 
 \begin{lemma}
     If events $E_1, \dots, E_n$ are mutually independent, then its counterparts $\overline{E_1}, \dots, \overline{E_n}$ are mutually independent.
 \end{lemma}
 Using these notions, we can now introduce a rather strong tool!
-\begin{lemma}[Symmetric \vocab{Loràsz Local Lemma}]
+\begin{theorem}[Symmetric \vocab{Lovász Local Lemma}]
     \label{thm:lll}
     Let $E_1, \dots, E_n$ be a set of events and assume
     \begin{enumerate}
@@ -51,7 +51,7 @@ Using these notions, we can now introduce a rather strong tool!
         \item $4dp \leq 1$.
     \end{enumerate}
     Then $P(\bigcap_{i=1}^n \overline{E_i}) > 0$.
-\end{lemma}
+\end{theorem}
 The proof is rather technical, but the main idea is to use two nested inductions,
 and rewrite our result as a fancy product using conditional probabilities.
 \begin{proof}

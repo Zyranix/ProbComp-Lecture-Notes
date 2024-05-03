@@ -1,4 +1,65 @@
 \begin{aufgabe}
 	Placeholder.
 \end{aufgabe}
+\begin{aufgabe}
+	Given an undirected graph $G=(V,E)$.
+	Let $d \in \natnum$ and $U \subseteq V$ the set of all vertices with degree at least $d$.
+	Then there exists a dominating set for $U$ of size at most 
+	\begin{align*}
+		\left\lfloor n \frac{\log(d+1)+1}{d+1} \right\rfloor.
+	\end{align*}
+	\begin{proof}
+		
+	\end{proof}
+\end{aufgabe}
+\begin{aufgabe}
+	Show that if
+	\begin{align*}
+		4 \binom{k}{2}\binom{n}{k-2}2^{1-\binom{k}{2}} \leq 1
+	\end{align*}
+	then the $k$th symmetric Ramsay number satisfies $R_k > n$.
+	
+	\begin{proof}	
+	Let $n,k \in \natnum$ such that the inequality is satisfied, and $G \sim \mathcal{G}_{n,p}$.
+	Define for every subset $S \subseteq V(G)$ with $|S|=k$ an event $E_S$ that $S$ is a $k$-clique or $k$-independent set, i.e. induces a complete or empty graph.
+	As shown in the lecture (see \eqref{eq:cliqueprob}), $P(E_S) = 2^{1-\binom{k}{2}}$.  
+	Consider the dependency graph for these events.
+	For $S,T \subseteq V(G)$ of size $k$, it holds that $E_S,E_T$ are independent iff $|S\cap T| \leq 1$,
+	since only in this case they do not share an edge.
+	In particular, $E_S$ is mutually independent of all $E_T$ with $|S \cap T| \leq 1$ since edges are existing independently from each other.
+	
+	Therefore, a trivial upper bound of the degree of $E_S$ is given as $\binom{k}{2}\binom{n}{k-2}$,
+	i.e. choose at least 2 vertices from $S$ to guarantee $|S \cap T| \geq 2$, and choose any $k-2$ vertices from all the other vertices 
+	(in fact, we could reduce $n$ to $n-2$ to get a tighter upper bound, but that's not what the exercise wants).
+	Since $4 \cdot \binom{k}{2}\binom{n}{k-2} \cdot P(E_S) \leq 1$ by assumption, 
+	we can apply Lovász Local Lemma (\autoref{thm:lll}) and deduce that $P(\bigcap_S \overline{E}_S) > 0$,
+	i.e. with non-zero probability there exists a graph with $n$ nodes that does not contain any $k$-cliques or $k$-independent sets,
+	proving $R_k > n$. 
+\end{proof}
+\end{aufgabe}
+\begin{aufgabe}
+	Consider the general form of Lovász Local Lemma:
+	\begin{theorem}
+		Let $E_1, \dots, E_n$ be a set of events in some probability space and $G=(V,E)$ their dependency graph.
+		If there exist $x_1, \dots, x_n \in [0,1]$ such that
+		\begin{align*}
+			P(E_i) \leq x_i \prod_{(i,j)\in E}(1-x_j),
+		\end{align*}
+		then it holds that
+		\begin{align*}
+			P\left(\bigcap_{i=1}^n \overline{E}_i\right) \geq \prod_{i=1}^{n}(1-x_i).
+		\end{align*}
+	\end{theorem}
+	Use this to prove that you can replace the condition $4dp \leq 1$ in the symmetric version (\autoref{thm:lll}) by the weaker condition $ep(d+1)\leq 1$ (where $e$ denotes Euler's number).
+	\begin{proof}
+		Assume $P(E_i) \leq p$ such that the maximum degree of the dependency event graph $G=(V,E)$ is $d$, and $ep(d+1) \leq 1$.
+		Let $x_i \coloneqq \frac{1}{d+1}$ for every $i$. Then
+		\begin{align*}
+			x_i \prod_{(i,j)\in E}(1-x_j) &= \frac{1}{d+1}\prod_{(i,j)\in E}\left(1-\frac{1}{d+1}\right) &&\mid \max_{v\in V} \deg(v) \leq d\\
+			&\geq \frac{1}{d+1}\left(1-\frac{1}{d+1}\right)^d && \mid \text{Euler's inequality } e^x > \left(1 + \frac{x}{n+1}\right)^n\\
+			&>  \frac{1}{d+1} \frac{1}{e} \geq p \geq P(E_i).
+		\end{align*}
+		By the general Local Lemma, $P(E_i) \geq \prod_{i=1}^{n}\frac{d}{d+1} > 0$.
+	\end{proof}
+\end{aufgabe}
 
