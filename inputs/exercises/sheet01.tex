@@ -9,7 +9,27 @@
 		\left\lfloor n \frac{\log(d+1)+1}{d+1} \right\rfloor.
 	\end{align*}
 	\begin{proof}
-		
+		Define $p \coloneqq \frac{\log(d+1)}{d+1}$ and randomly choose a subset $S \subseteq V$
+		such that every node is chosen independently with probability $p$.
+		Then, add a set $|T|$ that contains every node $u \in U$ if $u$ is not already dominated by $S$.
+		Clearly, $S\cup T$ is a dominating set then.
+		Let $T_u$ be the indicator variable if $u \in T$.
+		Consider the expected number of nodes in our final set
+		\begin{align*}
+			\expect{|S \cup T|} = \expect{|S|} + \expect{\sum_u T_u} = \expect{|S|} + |U|P(T_u=1).
+		\end{align*}
+		Notice $|S|$ follows a binomial distribution $\mathcal{B}_{n,p}$.
+		Also, $P(T_u=0)$ denotes the probability that $u$ is not dominated by $S$,
+		i.e. none of its $\deg(u) \geq d$ neighbors or itself was chosen, resulting in
+		the probability $P(T_u=0) = (1-p)^{d+1}$. In summary,
+		\begin{align*}
+			\expect{|S|} + |U|P(T_u=1) & = np + |U|(1-p)^{d+1}                                                                                          \\
+										& \leq n (p + (1-p)^{d+1}) = n \left( \frac{\log(d+1)}{d+1} + \left(1-\frac{\log(d+1)}{d+1}\right)^{d+1} \right) \\
+										& \leq n \left( \frac{\log(d+1)}{d+1} + e^{-\log(d+1)} \right) = n \frac{\log(d+1) + 1}{d+1}.                    \\
+		\end{align*}
+		Notice that we utilized Euler's inequality $e^x > (1+ \frac{x}{n})^n$ in the last line using $x = -\log(d+1)$.
+		In particular, since we are working with discrete random variables,
+		there is a probability of larger zero that $|S \cup T|$ is at most the floored value of our final upper bound for the expected value (also see \autoref{thm:existence_rv}).
 	\end{proof}
 \end{aufgabe}
 \begin{aufgabe}
