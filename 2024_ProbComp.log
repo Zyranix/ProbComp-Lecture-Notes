@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.3.15)  3 MAY 2024 07:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.3.15)  3 MAY 2024 07:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2737,41 +2737,32 @@ ults to 0 on input line 2.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 5.
+
+Overfull \hbox (8.18639pt too wide) detected at line 29
+[]
+ []
+
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 16.
+(mdframed)              on input line 36.
+[20]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 41.
+(mdframed)              on input line 61.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 43.
+(mdframed)              on input line 63.
 Package mdframed Info: mdframed inside a box 
- mdframed uses option nobreak mdframed on input line 52.
+ mdframed uses option nobreak mdframed on input line 72.
 
-Overfull \hbox (17.15126pt too wide) detected at line 61
+Overfull \hbox (17.15126pt too wide) detected at line 81
 []
  []
 
-Package mdframed Info: You first box width is to small
- mdframed fixed it
-(mdframed)              on input line 64.
-[20]) (./inputs/exercises/sheet02.tex
-Package mdframed Info: mdframed detected package amsthm 
- changed the theorem header of amsthm
-(mdframed)              on input line 3.
-
-Overfull \hbox (8.18639pt too wide) detected at line 21
-[]
- []
-
-Package mdframed Info: You first box width is to small
- mdframed fixed it
-(mdframed)              on input line 26.
-[21]) [22])
+) [21])
 runsystem(makeindex vocabindex.idx)...executed safely (allowed).
 
- (./vocabindex.ind) [23
+ (./vocabindex.ind) [22
 
 
 
@@ -2791,17 +2782,17 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-03-14>
  ***********
 Package rerunfilecheck Info: File `full.out' has not changed.
-(rerunfilecheck)             Checksum: 80FF6553BD443CE8E13FF89B6F41E88A;1347.
+(rerunfilecheck)             Checksum: ADCE73C76586110BC8E48D2C97360D44;1347.
 Package logreq Info: Writing requests to 'full.run.xml'.
 \openout1 = `full.run.xml'.
 
  )
 (\end occurred when \ifx on line 11 was incomplete) 
 Here is how much of TeX's memory you used:
- 63300 strings out of 474104
- 1426806 string characters out of 5745485
- 2460108 words of memory out of 5000000
- 84292 multiletter control sequences out of 15000+600000
+ 63289 strings out of 474104
+ 1426539 string characters out of 5745485
+ 2457064 words of memory out of 5000000
+ 84287 multiletter control sequences out of 15000+600000
  589479 words of font info for 137 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  113i,19n,145p,3460b,1168s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -2836,10 +2827,10 @@ ir/texmf-dist/fonts/type1/public/cm-super/sfss0900.pfb></opt/texlive/texdir/tex
 mf-dist/fonts/type1/public/cm-super/sfti0600.pfb></opt/texlive/texdir/texmf-dis
 t/fonts/type1/public/cm-super/sfti0700.pfb></opt/texlive/texdir/texmf-dist/font
 s/type1/public/cm-super/sfti1000.pfb>
-Output written on full.pdf (23 pages, 489052 bytes).
+Output written on full.pdf (22 pages, 488800 bytes).
 PDF statistics:
- 558 PDF objects out of 1000 (max. 8388607)
- 447 compressed objects within 5 object streams
- 166 named destinations out of 1000 (max. 500000)
+ 552 PDF objects out of 1000 (max. 8388607)
+ 442 compressed objects within 5 object streams
+ 163 named destinations out of 1000 (max. 500000)
  189 words of extra memory for PDF output out of 10000 (max. 10000000)
 
