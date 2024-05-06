@@ -1,0 +1,99 @@
+%! TEX root = ../../master.tex
+\lecture[More applications of McDiarmid's inequality.]{Mo 06 May 2024}{McDiarmid applications}
+
+\begin{problem}[Balls-into-bins]
+Suppose we throw $m$ balls into $n$ bins.
+What is the (expected) number of empty bins?
+\end{problem}
+Let $X_i$ be the bin into which the $i$th ball falls.
+Then, for $f : [n]^m \rightarrow [n]$ such that $f$ counts the number of empty bins,
+we see $|f(x) - f(y)| \leq 1$, and thus
+\begin{align*}
+    P(|f(X) - \expect{f(X)}| \geq \lambda) \leq 2 \exp\left(\frac{-2\lambda^2}{m}\right).
+\end{align*}
+\begin{problem}[Bin packing]
+Let $X_1, \dots, X_n$ be random variables with values in $[0,1]$.
+What is the (expected) number of bins of capacity 1 needed to pack all $X_i$?
+\end{problem}
+Define $f : [0,1]^n \rightarrow [n]$ such that $f$ maps into the number of bins needed.
+We see $|f(x) - f(y)| \leq 1$, and thus
+\begin{align*}
+    P(|f(X) - \expect{f(X)}| \geq \lambda) \leq 2 \exp\left(\frac{-2\lambda^2}{m}\right).
+\end{align*}
+\begin{problem}[Random knapsack]
+Let $X_1, \dots, X_n$ be random variables with values in $[0,1]$.
+Consider a knapsack of capacity $b$.
+A packing of $X$ is a subset of some $X_i$ such that their sum is at most $b$.
+We are interested in the \emph{maximal} packing $K:[0,1]^n \rightarrow \realnum$,
+i.e. the largest sum of $X_i$'s that is still at most $b$.
+\end{problem}
+McDiarmid applies as above.
+
+\begin{lemma}
+    Let $K_n$ be the complete graph on $n$ vertices.
+    Let $(A_1, \dots, A_m)$ be a partition of the edges in $K_n$.
+    Furthermore, let $f: \mathcal{G_n} \rightarrow \realnum$ a function defined on the space of all graphs with $n$ vertices,
+    and assume $|f(G) - f(H)| \leq C$ if the symmetric difference $E_G \triangle E_H$
+    is contained in \emph{one} $A_i$.
+    Then, for a random graph $G$ on $n$ vertices
+    \begin{align*}
+        P(f(G) - \expect{f(G)} \geq \lambda) \leq \exp(\frac{-2 \lambda^2}{mC^2}).
+    \end{align*}
+\end{lemma}
+\begin{proof}
+    Trivial by \autoref{thm:mcdiarmid}.
+\end{proof}
+\begin{corollary}
+    If $|f(G) - f(H)| \leq C$ when $G,H$ only differ by one edge, then
+    \begin{align*}
+        P(f(G) - \expect{f(G)} \geq \lambda) \leq \exp(\frac{-4 \lambda^2}{n(n-1)C^2}).
+    \end{align*}
+\end{corollary}
+\begin{proof}
+    Trivial.
+\end{proof}
+\begin{corollary} \label{thm:cor2_graph_mcdiarmid}
+    If $|f(G) - f(H)| \leq C$ when $G,H$ only differ at edges connected to \emph{one} vertex,
+    then we can take $m=n$.
+\end{corollary}
+\begin{proof}
+    Use $A_i = \{ \{j,i\}\in E \mid j < i \}$.
+\end{proof}
+\begin{problem}
+Let $G$ be a graph on $n$ vertices.
+A coloring of $G$ is a map $c: V_G \rightarrow [n]$
+such that neighbors are not colored the same.
+The chromatic number $\chi(G)$ of $G$ is the minimal amount of different colors needed
+for a valid coloring of $G$.
+We are interested in the concentration of the chromatic number.
+\end{problem}
+\autoref{thm:cor2_graph_mcdiarmid} tells us that
+\begin{align*}
+    P(|\chi(G) - \expect{\chi(G)}| \geq \lambda) \leq 2\exp\left(\frac{-2\lambda^2}{n}\right).
+\end{align*}
+\begin{theorem}
+    Let $G \sim \mathcal{G}_{n,\frac{1}{2}}$.
+    Then, following property for the probability of the concentration for the chromatic number
+    holds for every $\eps > 0$:
+    \begin{align*}
+        P(2 \log_2(n)(1 - \eps) \leq \chi(G) \leq 2 \log_2(n)(1+\eps)) \xrightarrow{n \rightarrow \infty} 1.
+    \end{align*}
+\end{theorem}
+\begin{proof}[Proof idea.]
+    Suppose we can find some $s(n)$ such that the probability that ${G}_{n,p}$ has no independent set of size $s(n)$ is small.
+    Then, we will iteratively color this set, remove it, and apply again $s(n - s(n))$.
+    In fact, we will upper bound the mentioned probability by $q(n) \coloneqq \exp(-n^{4/3})$.
+
+    More detailed, let $\tilde n \coloneqq \frac{n}{\log(n)^2}$.
+    We call a set $W \subseteq V_G$ with $|W| \geq \tilde n$ \emph{bad},
+    if it contains no independent set of size $s(\tilde n)$.
+    We show that the probability that there exists a bad set in $\mathcal{G}_{n,p}$
+    is upper-bounded by $2^n q(\tilde n)$, which tends to 0 for $n \rightarrow \infty$.
+    The procedure above then lets us iteratively
+    \begin{itemize}
+        \item color the set of size $s(\tilde n)$,
+        \item remove those $s(\tilde n)$ vertices,
+    \end{itemize}
+    until we are left at most $\tilde n$ vertices and color them uniquely.
+    This process uses $\frac{n}{s(\tilde n)}+\tilde n$ colors.
+\end{proof}

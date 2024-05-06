@@ -1,10 +1,56 @@
 \begin{aufgabe}
-	Placeholder.
+	Given a balanced graph $H$ with $v \coloneqq |V(H)|, e = \coloneqq |E(H)|$.
+	Show that $n^{v/e}$ is a threshold for the property if $H$ is contained in a random graph $G \sim \mathcal{G}_{n,p}$.
+	\begin{proof}
+		For every subset $S \subseteq V(G)$ with $|S| = v$ let $X_S$ be the number of containments of $H$ in $S$, and $X$ be the total number of containments.
+		The probability for a specific containment is given as $p^e$.
+		However, for every $H$ independent of $n,p$ there is a specific number of times $c_H$ it can appear in such an subset $S$.
+		Therefore,
+		\begin{align*}
+			\expect{X} = \sum_{S \subseteq V(G)}\expect{X_S} = \binom{n}{v} c_H p^e.
+		\end{align*}
+		By Markov's inequality,
+		\begin{align*}
+			P(X > 0) = P(X \geq 1) \leq \frac{\expect{X}}{1}=\binom{n}{v} c_H p^e \in O(n^vp^e)
+		\end{align*}
+		If $p << n^{-v/e}$, then $\binom{n}{v} c_H p^e  \xrightarrow{n \rightarrow \infty} 0$, proving one part of the threshold property.
+
+		For the other direction, consider the variance of $X$.
+		Let $H_i$ be the indicator for every possible containment of $H$ in $G$.
+		Then, the sum over all $H_i$ is also $X$, i.e. it suffices to consider all pairs $H_i$ and $H_j$ for their covariance.
+		Notice the covariance only depends on the number of overlapping (existing) edges.
+		Let $\hat H = H_i \cap H_j$ be the cross-sectional graph with edges only existing if they are in both graphs.
+		Then,
+		\begin{align*}
+			\covar{H_i, H_j} & = \expect{H_iH_j} - \expect{H_i}\expect{H_j} \\
+			                 & = p^{e+e-|E(\hat H)|} - p^{2e}.
+		\end{align*}
+		Also, consider how often each specific overlap $\hat H$ could occur.
+		The number of involved nodes is by inclusion-exclusion principle $v+v-|V(\hat H)|$,
+		therefore the pattern resulting in $\hat H$ could occur $\binom{n}{2v-|V(\hat H)|}$-times.
+		Finally, we again introduce a constant $c_{H,\hat H}$ denoting the number of ways two copies of $H$
+		intersect in $\hat H$. Thus, combining everything we conclude
+		\begin{align}
+			\variance{X} & = \sum_i \variance{H_i} + \sum_{i,j} \covar{H_i, H_j}                        \\
+			             & =\sum_{\hat H \subseteq H} c_{H,\hat H}n^{2v-|V(\hat H)|}p^{2e-|E(\hat H)|}.
+		\end{align}
+		Notice that variance is just a special form of covariance.
+		Applying Chebyshev's inequality we get
+		\begin{align*}
+			P(X = 0) & = P(|X - E(X)| = E(X) ) \leq \frac{\variance{X}}{\expect{X}^2}            \\
+			         & = \sum_{\hat H \subseteq H} c_{H,\hat H}n^{-|V(\hat H)|}p^{-|E(\hat H)|}.
+		\end{align*}
+		Since $H$ is balanced, every subgraph $\hat H$ must satisfy $e/v \geq |E(\hat H)|/|V(\hat H)|$ by definition.
+		Therefore, if $p >> n^{-v/e}$, then also $p >> n^{-|V(\hat H)|/|E(\hat H)|}$,
+		and $p^{-|E(\hat H)|} << n^{|V(\hat H)|}$,
+		and the previous upper bound tends to 0 for $n \rightarrow \infty$.
+		This proves the other condition for the threshold.
+	\end{proof}
 \end{aufgabe}
 \begin{aufgabe}
 	Given an undirected graph $G=(V,E)$.
 	Let $d \in \natnum$ and $U \subseteq V$ the set of all vertices with degree at least $d$.
-	Then there exists a dominating set for $U$ of size at most 
+	Then there exists a dominating set for $U$ of size at most
 	\begin{align*}
 		\left\lfloor n \frac{\log(d+1)+1}{d+1} \right\rfloor.
 	\end{align*}
@@ -24,8 +70,8 @@
 		the probability $P(T_u=0) = (1-p)^{d+1}$. In summary,
 		\begin{align*}
 			\expect{|S|} + |U|P(T_u=1) & = np + |U|(1-p)^{d+1}                                                                                          \\
-										& \leq n (p + (1-p)^{d+1}) = n \left( \frac{\log(d+1)}{d+1} + \left(1-\frac{\log(d+1)}{d+1}\right)^{d+1} \right) \\
-										& \leq n \left( \frac{\log(d+1)}{d+1} + e^{-\log(d+1)} \right) = n \frac{\log(d+1) + 1}{d+1}.                    \\
+			                           & \leq n (p + (1-p)^{d+1}) = n \left( \frac{\log(d+1)}{d+1} + \left(1-\frac{\log(d+1)}{d+1}\right)^{d+1} \right) \\
+			                           & \leq n \left( \frac{\log(d+1)}{d+1} + e^{-\log(d+1)} \right) = n \frac{\log(d+1) + 1}{d+1}.                    \\
 		\end{align*}
 		Notice that we utilized Euler's inequality $e^x > (1+ \frac{x}{n})^n$ in the last line using $x = -\log(d+1)$.
 		In particular, since we are working with discrete random variables,
@@ -38,24 +84,24 @@
 		4 \binom{k}{2}\binom{n}{k-2}2^{1-\binom{k}{2}} \leq 1
 	\end{align*}
 	then the $k$th symmetric Ramsay number satisfies $R_k > n$.
-	
-	\begin{proof}	
-	Let $n,k \in \natnum$ such that the inequality is satisfied, and $G \sim \mathcal{G}_{n,p}$.
-	Define for every subset $S \subseteq V(G)$ with $|S|=k$ an event $E_S$ that $S$ is a $k$-clique or $k$-independent set, i.e. induces a complete or empty graph.
-	As shown in the lecture (see \eqref{eq:cliqueprob}), $P(E_S) = 2^{1-\binom{k}{2}}$.  
-	Consider the dependency graph for these events.
-	For $S,T \subseteq V(G)$ of size $k$, it holds that $E_S,E_T$ are independent iff $|S\cap T| \leq 1$,
-	since only in this case they do not share an edge.
-	In particular, $E_S$ is mutually independent of all $E_T$ with $|S \cap T| \leq 1$ since edges are existing independently from each other.
-	
-	Therefore, a trivial upper bound of the degree of $E_S$ is given as $\binom{k}{2}\binom{n}{k-2}$,
-	i.e. choose at least 2 vertices from $S$ to guarantee $|S \cap T| \geq 2$, and choose any $k-2$ vertices from all the other vertices 
-	(in fact, we could reduce $n$ to $n-2$ to get a tighter upper bound, but that's not what the exercise wants).
-	Since $4 \cdot \binom{k}{2}\binom{n}{k-2} \cdot P(E_S) \leq 1$ by assumption, 
-	we can apply Lovász Local Lemma (\autoref{thm:lll}) and deduce that $P(\bigcap_S \overline{E}_S) > 0$,
-	i.e. with non-zero probability there exists a graph with $n$ nodes that does not contain any $k$-cliques or $k$-independent sets,
-	proving $R_k > n$. 
-\end{proof}
+
+	\begin{proof}
+		Let $n,k \in \natnum$ such that the inequality is satisfied, and $G \sim \mathcal{G}_{n,p}$.
+		Define for every subset $S \subseteq V(G)$ with $|S|=k$ an event $E_S$ that $S$ is a $k$-clique or $k$-independent set, i.e. induces a complete or empty graph.
+		As shown in the lecture (see \eqref{eq:cliqueprob}), $P(E_S) = 2^{1-\binom{k}{2}}$.
+		Consider the dependency graph for these events.
+		For $S,T \subseteq V(G)$ of size $k$, it holds that $E_S,E_T$ are independent iff $|S\cap T| \leq 1$,
+		since only in this case they do not share an edge.
+		In particular, $E_S$ is mutually independent of all $E_T$ with $|S \cap T| \leq 1$ since edges are existing independently from each other.
+
+		Therefore, a trivial upper bound of the degree of $E_S$ is given as $\binom{k}{2}\binom{n}{k-2}$,
+		i.e. choose at least 2 vertices from $S$ to guarantee $|S \cap T| \geq 2$, and choose any $k-2$ vertices from all the other vertices
+		(in fact, we could reduce $n$ to $n-2$ to get a tighter upper bound, but that's not what the exercise wants).
+		Since $4 \cdot \binom{k}{2}\binom{n}{k-2} \cdot P(E_S) \leq 1$ by assumption,
+		we can apply Lovász Local Lemma (\autoref{thm:lll}) and deduce that $P(\bigcap_S \overline{E}_S) > 0$,
+		i.e. with non-zero probability there exists a graph with $n$ nodes that does not contain any $k$-cliques or $k$-independent sets,
+		proving $R_k > n$.
+	\end{proof}
 \end{aufgabe}
 \begin{aufgabe}
 	Consider the general form of Lovász Local Lemma:
@@ -75,9 +121,9 @@
 		Assume $P(E_i) \leq p$ such that the maximum degree of the dependency event graph $G=(V,E)$ is $d$, and $ep(d+1) \leq 1$.
 		Let $x_i \coloneqq \frac{1}{d+1}$ for every $i$. Then
 		\begin{align*}
-			x_i \prod_{(i,j)\in E}(1-x_j) &= \frac{1}{d+1}\prod_{(i,j)\in E}\left(1-\frac{1}{d+1}\right) &&\mid \max_{v\in V} \deg(v) \leq d\\
-			&\geq \frac{1}{d+1}\left(1-\frac{1}{d+1}\right)^d && \mid \text{Euler's inequality } e^x > \left(1 + \frac{x}{n+1}\right)^n\\
-			&>  \frac{1}{d+1} \frac{1}{e} \geq p \geq P(E_i).
+			x_i \prod_{(i,j)\in E}(1-x_j) & = \frac{1}{d+1}\prod_{(i,j)\in E}\left(1-\frac{1}{d+1}\right) &  & \mid \max_{v\in V} \deg(v) \leq d                                      \\
+			                              & \geq \frac{1}{d+1}\left(1-\frac{1}{d+1}\right)^d              &  & \mid \text{Euler's inequality } e^x > \left(1 + \frac{x}{n+1}\right)^n \\
+			                              & >  \frac{1}{d+1} \frac{1}{e} \geq p \geq P(E_i).
 		\end{align*}
 		By the general Local Lemma, $P(E_i) \geq \prod_{i=1}^{n}\frac{d}{d+1} > 0$.
 	\end{proof}

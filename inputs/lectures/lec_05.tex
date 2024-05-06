@@ -1,5 +1,5 @@
 %! TEX root = ../../master.tex
-\lecture[Azuma's inequality. McDiarmid's inequality. Applications.]{Mi 24 Apr 2024}{Martingales and Concentration}
+\lecture[Azuma's inequality. McDiarmid's inequality. Applications.]{Mo 29 Apr 2024}{Martingales and Concentration}
 \section{Martingales and Concentration}
 In this section we study "bounds" of random variables.
 \begin{definition}[\vocab{Bounds}]
@@ -72,17 +72,26 @@ Let us introduce following notion for continuity.
 The Lipschitz condition intuitively tries to limit the derivative in every point of $f$.
 In fact, one can show that this is an even stronger condition than "regular" continuity.
 \begin{theorem}[\vocab{McDiarmid's Inequality}] \label{thm:mcdiarmid}
-    Let $X$ be a stochastic process, and $f : \realnum^n \rightarrow \realnum$ a function satisfying the Lipschitz condition.
+    Let $X$ be a stochastic process, and $f : \realnum^n \rightarrow \realnum$ a function satisfying the Lipschitz condition with Lipschitz constant $c$.
     Then, for the \vocab{Doob Martingale}\footnote{The fact that $Z$ is indeed a martingale is a classical result.} defined as
     \begin{align}
         Z_k = \expect{f(X_1, \dots, X_n) \mid \bigotimes_{i=1}^k X_i}
     \end{align}
     we have
-    \begin{align}
-        P(|Z_k - Z_0| \geq \lambda) \leq 2\exp\left(\frac{-\lambda^2}{kc^2}\right)
+    \begin{align} \label{eq:mcdiarmid}
+        P(|Z_k - Z_0| \geq \lambda) \leq 2\exp\left(\frac{-2\lambda^2}{kc^2}\right)
     \end{align}
 \end{theorem}
 Again, we omit the proof, since it does not contain any exciting ideas.
+\begin{remark}
+    Most of the time, only the special case $k=n$ is interesting.
+    (Conditional expectancies are hard to calculate!)
+    In this case, the statement \eqref{eq:mcdiarmid} simplifies to
+    \begin{align}
+        P(f(X_1, \dots, X_n) - \expect{f(X_1, \dots, X_n)} \geq \lambda) \leq \exp\left(\frac{-2\lambda^2}{nc^2}\right).
+    \end{align}
+    Notice that the absence of the absolute value gets rid of the factor 2 (if needed).
+\end{remark}
 
 We now turn to some applications of these results.
 In the context of bioinformatics, DNA sequences are the most important research topic.
