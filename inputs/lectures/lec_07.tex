@@ -1,0 +1,87 @@
+%! TEX root = ../../master.tex
+\lecture[Even more applications of McDiarmid's inequality.]{Mi 08 May 2024}{McDiarmid applications}
+\begin{proof}[Proof continued.]
+    We claim that $s(n)=(2-\eps) \log(n)$.
+    Then, this would yield
+    \begin{align*}
+        \frac{n}{s(\tilde n)}+\tilde n & = \frac{n}{(2-\eps) \log(\frac{n}{\log(n)^2})} + \frac{n}{\log(n)^2}                                                                           \\
+                                       & = \frac{n}{(2-\eps)(\log(n) - 2\log \log (n))} + \frac{n}{\log(n)^2}                                                                           \\
+                                       & = \frac{n}{\log (n)} \left(\frac{1}{\log(n)} + \frac{1}{(2-\eps)(1-\frac{2 \log \log (n)}{\log(n)})}\right)                                    \\
+                                       & \xrightarrow{n \rightarrow \infty} \frac{n}{\log (n)}\left(0 + \frac{1}{2-\eps}\right) \sim \frac{n}{\log (n)}\left(\frac{1}{2} + \eps\right).
+    \end{align*}
+    Let $f(G)$ be the maximum number of independent sets of size at least $s(n)$ in $G$ that (pairwise) share at most one common vertex.
+    Then, $|f(G) - f(H)| \leq 1$ if $G,H$ only differ by 1 edge, since an edge belongs to at most one such independent set,
+    and by \autoref{thm:cor2_graph_mcdiarmid} we deduce
+    \begin{align*}
+        P(f(G) = 0) = P(f(G) - \expect{f(G)} \leq - \expect{f(G)}) \leq \exp\left(-\frac{4 \expect{f(G)}^2}{n^2}\right).
+    \end{align*}
+    It remains to show $\expect{f(G)} \geq n^{4/3}$.
+\end{proof}
+\begin{definition}[\vocab{Hamming distance}]
+    Let $X_1, \dots, X_n$ be random variables in some space $E$.
+    We call
+    \begin{align*}
+        d_H(X,Y) \coloneqq \sum_{i=1}^n \mathbf{1}_{X_i \neq Y_i}
+    \end{align*}
+    the Hamming distance of $X,Y \in E^n$.
+    Furthermore, for $A \subseteq E^n$, we define
+    \begin{align*}
+        d_H(X,A) \coloneqq \min_{y \in A} d_H(X,Y).
+    \end{align*}
+\end{definition}
+\begin{theorem}
+    For any $\lambda \geq 0$ and $A \subseteq E^n$,
+    \begin{align*}
+        P(X \in A) \cdot P(d_H(X,A) \geq \lambda) \leq \exp\left(\frac{-\lambda^2}{2n}\right).
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    Let $\mu = \expect{d_H(X,A)}$.
+    Also, $d_H(\cdot, A) \rightarrow \natnum_0$ has a bounded (element-wise) difference of $1$.
+    By \autoref{thm:mcdiarmid}, we see
+    \begin{align*}
+        P(d_H(X,A) - \mu \geq \lambda) \leq \exp{\frac{-2\lambda^2}{n}}, \\
+        P(d_H(X,A) - \mu \leq -\lambda) \leq \exp{\frac{-2\lambda^2}{n}}.
+    \end{align*}
+    The latter inequality yields
+    \begin{align*}
+        P(X \in A) = P(d_H(X,A) = 0) = P(d_H(X,A) - \mu \leq -\mu) \leq \exp{\frac{-2\lambda^2}{n}},
+    \end{align*}
+    the former inequality yields
+    \begin{align*}
+        P(d_H(X,A) \geq \lambda) = P(d_H(X,A) - \mu \geq \lambda -\mu) \leq \exp{\frac{-2(\lambda - \mu)^2}{n}}.
+    \end{align*}
+    Now, consider the minimum of these two probabilities.
+    By our upper-bounds,
+    \begin{align*}
+        \min P(X \in A), P(d_H(X,A) \geq \lambda) \leq \exp \left(-\frac{2}{n}\max\{\mu, \lambda-\mu\}^2\right).
+    \end{align*}
+    By a case distinction
+    if $\mu \geq \lambda/2$, simple algebra both times yields the wanted upper-bound $\exp(\frac{-\lambda^2}{2n})$.
+\end{proof}
+This theorem allows us to upper-bound the probability that $X$ is either contained in $A$ or "far away" from $A$.
+One "famous" application is the case $E = \{0,1\}$, i.e. $X_i$ adheres to a Bernoulli distribution.
+\begin{remark}
+    The proof also works pretty analogously if we use
+    \begin{align*}
+        d_\alpha(X,Y) \coloneqq \sum_{i=1}^{n} \alpha_i \cdot \mathbf{1}_{X_i \neq Y_i}
+    \end{align*}
+    such that $\max_i \alpha_i \leq 1$.
+\end{remark}
+\begin{definition}[\vocab{Median}]
+    A median of a random variable $X$ is defined as any $m \in \realnum$ such that
+    \begin{align*}
+        P(X \geq m) \geq \frac{1}{2}, \quad P(X \leq m) \geq \frac{1}{2}.
+    \end{align*}
+\end{definition}
+Notice that saying $|f(x) - f(y)| \leq C$ for $x,y$ differing in at most one place
+is equivalent to saying $|f(x) - f(y)| \leq d_\alpha(x,y)$ using $\alpha = (C,\dots,C)$.
+We can use the previous result to show a version of McDiarmid on the median.
+\begin{theorem}
+    Let $|f(x) - f(y)| \leq d_\alpha(x,y)$ for some $\alpha = (C,\dots,C)$.
+    Then, for a random variable $X$ with a median $m$,
+    \begin{align*}
+        P(|f(X) - m| \geq \lambda) \leq 2 \exp \left(\frac{-\lambda^2}{2C^2}\right).
+    \end{align*}
+\end{theorem}
+(Proof omitted)

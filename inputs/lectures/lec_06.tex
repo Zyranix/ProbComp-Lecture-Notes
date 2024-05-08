@@ -76,14 +76,14 @@ We are interested in the concentration of the chromatic number.
     Then, following property for the probability of the concentration for the chromatic number
     holds for every $\eps > 0$:
     \begin{align*}
-        P(2 \log_2(n)(1 - \eps) \leq \chi(G) \leq 2 \log_2(n)(1+\eps)) \xrightarrow{n \rightarrow \infty} 1.
+        P\left(2 \log_2(n)(1 - \eps) \leq \chi(G) \leq \frac{n}{2 \log_2(n)}(1+\eps)\right) \xrightarrow{n \rightarrow \infty} 1.
     \end{align*}
 \end{theorem}
-\begin{proof}[Proof idea.]
-    Suppose we can find some $s(n)$ such that the probability that ${G}_{n,p}$ has no independent set of size $s(n)$ is small.
-    Then, we will iteratively color this set, remove it, and apply again $s(n - s(n))$.
-    In fact, we will upper bound the mentioned probability by $q(n) \coloneqq \exp(-n^{4/3})$.
-
+Let us outline our core idea first:
+Suppose we can find some $s(n)$ such that the probability that ${G}_{n,p}$ has no independent set of size $s(n)$ is small.
+Then, we will iteratively color this set, remove it, and apply again $s(n - s(n))$.
+In fact, we will upper bound the mentioned probability by $q(n) \coloneqq \exp(-n^{4/3})$.
+\begin{proof}
     More detailed, let $\tilde n \coloneqq \frac{n}{\log(n)^2}$.
     We call a set $W \subseteq V_G$ with $|W| \geq \tilde n$ \emph{bad},
     if it contains no independent set of size $s(\tilde n)$.
@@ -95,5 +95,5 @@ We are interested in the concentration of the chromatic number.
         \item remove those $s(\tilde n)$ vertices,
     \end{itemize}
     until we are left at most $\tilde n$ vertices and color them uniquely.
-    This process uses $\frac{n}{s(\tilde n)}+\tilde n$ colors.
+    This process uses $\frac{n}{s(\tilde n)}+\tilde n$ colors. \emph{Proof continues next lecture.}
 \end{proof}
