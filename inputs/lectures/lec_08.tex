@@ -1,0 +1,91 @@
+%! TEX root = ../../master.tex
+\lecture[I JUST CANT GET ENOUGH OF MCDIARMID]{Mi 15 May 2024}{Typical bounded differences}
+We are interested in the number of triangles $f(G)$ of a random graph $G \sim \mathcal{G}_{n,p}$.
+Its Lipschitz condition number is given as $n-2$ as one can check easily.
+
+In the following, we want to generalize McDiarmid's theorem to use knowledge of our probabilistic notions.
+First, suppose some random variable $X$ with values in $\realnum^n$.
+We can relax the Lipschitz condition to only hold for $x,y \in A \subseteq \realnum^n$
+such that $A$ satisfies $P(X \in A) = 1$ (but still differing in at most 1 coordinate).
+Then, $g(x) \coloneqq f(x) \mathbb{1}_{x \in A} + c_0$ (for suitable $c_0$) still satisfies the original McDiarmid conditions
+and we can conclude
+\begin{align}
+    P(f(X) - \expect{f(X)} \geq \lambda) = P(g(X) - \expect{g(X)} \geq \lambda) \leq \exp\left(\frac{-\lambda^2}{nc^2}\right)
+\end{align}
+by utilizing our distributional knowledge of $X$.
+
+We can generalize even more and choose $A \subseteq \realnum^n$ arbitrarily instead.
+This enables us to split $X$ into two cases depending on if it is included in $A$, and we can write
+\begin{equation} \label{eq:upper_bound_split_diarmid}
+    \begin{split}
+        P & (f(X) - \expect{f(X)} \geq \lambda)                                           \\
+        & = P(f(X) - \expect{f(X)} \geq \lambda \mid X \in A ) P(X \in A)               \\
+        & \quad + P(f(X) - \expect{f(X)} \geq \lambda  \mid X \not\in A) P(X \not\in A) \\
+        & \leq \exp\left(\frac{-\lambda^2}{nc^2}\right) + P(X \not \in A).
+    \end{split}
+\end{equation}
+
+Now, let us return to counting triangles.
+Define for vertices $u,v \in V$ the random variables $X_{u,v}$ denoting the number of
+common neighbors of $u$ and $v$, which is binomially distributed according to $Bin(n-2,p^2)$.
+The Chernoff nound for binomial random variables tells us for $\delta > 0 $ that
+\begin{align*}
+    P(X_{u,v} \geq (1+ \delta)\expect{X_{u,v}}) \leq \exp\left(\frac{-\expect{X_{u,v}}\delta^2}{3}\right).
+\end{align*}
+This implies in our context of triangle counting that
+\begin{align*}
+    P(X_{u,v} - \expect{X_{u,v}} \geq \delta (n-2)p^2) \leq \exp\left(\frac{-(n-2)p^2\delta^2}{3}\right),
+\end{align*}
+which, using $\delta = \frac{\lambda}{(n-2)p^2}$ reduces to the more familiar form
+\begin{align}\label{eq:upper_bound_mcd_gen}
+    P(X_{u,v} - \expect{X_{u,v}} \geq \lambda) \leq \exp\left(\frac{-\lambda^2}{3(n-2)p^2}\right).
+\end{align}
+We now want to find a non-trivial set $A$ in the sense that \eqref{eq:upper_bound_split_diarmid}
+gives us a meaningful upper-bound, i.e. the righthand-side should be smaller than 1.
+Define $A$ as the set of graphs such that all pairs of vertices $u,v$ satisfy $X_{u,v} < \expect{X_{u,v}} + \lambda$.
+Consider the case $G \not \in A$. Using \eqref{eq:upper_bound_mcd_gen} and union bounding, we see
+\begin{align*}
+    P(G \not \in A) & = P(\exists u,v: X_{u,v} \geq (n-2)p^2+\lambda)                                                                          \\
+                    & = P\left(\bigcup_{u \neq v} X_{u,v} \geq (n-2)p^2 + \lambda \right) \leq n^2 \exp \left(\frac{-\lambda^2}{3np^2}\right).
+\end{align*}
+If we choose $\lambda = pn^{2+\eps}$ for some small $\eps > 0$, the righthand-side
+converges to a value smaller 1.
+Notice our choice of $\lambda$ implies $\lambda + np^2 \leq \lambda^2 + \lambda$ as a suitable Lipschitz constant.
+Adding the case $P(G \in A)$, we conclude according to \eqref{eq:upper_bound_split_diarmid} for $\mu > 0$
+\begin{align*}
+    P(f(G) - \expect{f(G)} \geq \mu) \leq \exp\left(\frac{-\mu^2}{n(\lambda+\lambda^2)^2}\right) +  n^2\exp\left(\frac{-\lambda^2}{3np^2}\right).
+\end{align*}
+Using some confusing blackboard magic and oral remarks we concluded for $\eps > 0$
+\begin{align}
+    P(f(G) - \expect{f(G)} \geq n^{\frac{1}{2}+\eps}) \xrightarrow{n \rightarrow \infty} 0,
+\end{align}
+which is a rather strong concentration result for the number of triangles.
+
+Let us summarize the technique we used here as a more general theorem.
+\begin{theorem}
+    Let $X_1, \dots, X_n$ be i.i.d.~random variables and let $\Lambda \subseteq \realnum$ be
+    such that
+    \begin{enumerate}
+        \item $P(X_i \not\in \Lambda) \leq \exp(- \omega(n^\eps))$ for some $\eps > 0$, and
+        \item $|f(x) - f(y)| \leq c$ for all $x,y \in \Lambda^n$ that differ in at most one coordinate.
+    \end{enumerate}
+    Then
+    \begin{align*}
+        P(f(X) - \expect{(f(X))} \geq \omega(\sqrt{n})) \xrightarrow{n \rightarrow \infty} 0.
+    \end{align*}
+\end{theorem}
+Finally, we introduce one more important concentration result.
+As previously shown, \autoref{thm:distance_concentration} (together with its accompanying remark) yielded some concentration bounds.
+Building on this, we can generalize to show following result:
+\begin{theorem}[\vocab{Talagrand's inequality}]
+    Let $x=(X_1, \dots, X_n)$ be a vector of i.i.d.~random variable in $\realnum$ and $A \subseteq \realnum^n$.
+    We define \vocab{Talagrand's Convex Distance} as the distance function
+    \begin{align*}
+        d_T(x,A) \coloneqq \sup_{||\alpha||=1}d_\alpha(x,A).
+    \end{align*}
+    Then, it holds that
+    \begin{align*}
+        d_T(x,A) \geq \frac{1}{\sqrt{n}}d_H(x,A).
+    \end{align*}
+\end{theorem}
+This effectively means any upper bound on $d_T$ is also an upper bound for Hamming distances.
