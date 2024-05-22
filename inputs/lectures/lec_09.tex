@@ -1,2 +1,108 @@
 %! TEX root = ../../master.tex
-\lecture[I JUST CANT GET ENOUGH OF MCDIARMID]{Mi 22 May 2024}{Typical bounded differences}
+\lecture[Talagrand's inequality.]{Mi 22 May 2024}{Talagrand's inequality}
+Finally, we introduce one more important concentration result.
+Let us introduce a more generalized distance function first.
+\begin{definition}[\vocab{Talagrand's Convex Distance}]
+    We define Talagrand's Convex Distance as the distance function
+    \begin{align*}
+        d_T(x,A) \coloneqq \sup_{||\alpha||=1}d_\alpha(x,A).
+    \end{align*}
+\end{definition}
+In particular, it holds that
+\begin{align}
+    d_T(x,A) \geq \frac{1}{\sqrt{n}}d_H(x,A).
+\end{align}
+This effectively means any upper bound on $d_T$ is also an upper bound for Hamming distances.
+As previously shown, \autoref{thm:distance_concentration} (together with its accompanying remark) yielded some concentration bounds.
+Building on this, we can generalize to show following result:
+\begin{theorem}[\vocab{Talagrand's inequality}]
+    Let $x=(X_1, \dots, X_n)$ be a vector of i.i.d.~random variable in $\realnum$ and
+    $A \subseteq \realnum^n$.
+    Then for $\lambda \geq 0$
+    \begin{align*}
+        P(X \in A)P(d_T(X,A) \geq \lambda) \leq \exp\left(\frac{-\lambda^2}{4}\right).
+    \end{align*}
+\end{theorem}
+The proof uses similar techniques as for the Hamming distance version, but is mainly just technical, which is why we omit it here.
+Instead, let us focus on the application of this result:
+Generally, Talagrand's inequality is effective at concentrating functions $h$
+for which $h(x) \geq s$ can be verified by looking at some small subset of $\{X_i\}$.
+\begin{definition}
+    We call a function $h: \realnum^n \rightarrow \realnum$ is called $f$-certifiable
+    with regard to a function $f: [n] \rightarrow [n]$ if
+    for all $x \in \realnum^n$ with $h(x) \geq s$ it holds that there is an index set
+    $\mathcal{I} \subseteq [n]$ such that
+    \begin{enumerate}
+        \item $|\mathcal I| \leq f(s)$, and
+        \item if $y \in \realnum^n$ is equal to $x$ on $\mathcal I$, also $h(y) \geq s$.
+    \end{enumerate}
+\end{definition}
+Let us first build some intuition for this rather intricate definition:
+\begin{example}
+    Let $h(G)$ be the number of triangles in $G \sim \mathcal G_{n,p}$.
+    Then, $h$ is $f$-certifiable using $f(s) = 3s$.
+    \begin{proof}
+        If $h(G) \geq s$, then there exist (at least) $s$ triangles, which have at most $3s$ edges in total.
+        We use every such edge to define $\mathcal I$ (note that we deliberately not use \emph{every} triangle to still satisfy the bound).
+        Any $H$ which has those same edges also has at least $s$ triangles.
+    \end{proof}
+\end{example}
+In fact, this definition allows us prove a more deliberate concentration result.
+\begin{theorem}
+    If $h$ is $f$-certifiable and $1$-Lipschitz continuous, then it holds for any $\lambda,\mu$
+    \begin{align*}
+        P\left(h(X) \leq \mu - \lambda \sqrt{f(\mu)}\right) P(h(X) \geq \mu) \leq \exp\left(-\frac{\lambda^2}{4}\right).
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    Begin by choosing $A \coloneqq \{x \mid h(x) \leq \mu - \lambda \sqrt{f(\mu)} \}$
+    as the "bad" set.
+    Suppose $h(y) \geq \mu$. We prove by contradiction that $d_T(y,A) \geq \lambda$.
+    Let $\mathcal I$ be the witness set for $y$, i.e. $|\mathcal I| \leq f(s)$,
+    and define $\alpha = (\alpha_1, \dots \alpha_n)$ using $\alpha_i = \frac{\mathbf{1}(i \in \mathcal I)}{\sqrt{|\mathcal I}}$
+    (i.e. evenly distributed over all used values of $\mathcal I$).
+    If $d_T(y,A) < \lambda$, then there is a $z \in A$ with $d_\alpha(y,z) < \lambda$.
+    Also, $y,z$ can differ at at most $\lambda \sqrt{|\mathcal I|} \leq \lambda \sqrt{f(\mu)}$ coordinates of $\mathcal I$.
+    Let the vector $w$ equal to $y$ on indices in $\mathcal I$, otherwise equal to $z$.
+    Notice $h(w)\geq \mu$, and $d_H(w,z) \leq \lambda \sqrt{f(\mu)}$.
+    Therefore, using our Lipschitz condition, it holds that
+    \begin{align*}
+        h(z) \leq h(w) - \lambda\sqrt{f(\mu)} \leq \mu - \lambda \sqrt{f(\mu)},
+    \end{align*}
+    which contradicts our assumption and concludes $d_T(y,A) \geq \lambda$.
+\end{proof}
+\begin{remark} \label{rem:mu_as_med}
+    In applications, it is often useful to choose $\mu$ as the median of $h(X)$,
+    because in this case the second factor can be lower-bounded by $\frac{1}{2}$.
+\end{remark}
+Let us apply this result to deduce some concentration bounds:
+\begin{problem}
+Let $X_1, \dots, X_n \sim \mathcal U([0,1])$,
+and let $h(X)$ be the length of the longest increasing subsequence\footnote{remember that subsequence do not need to be consecutive}
+of $X$. Then, $h$ is $1$-Lipschitz.
+\end{problem}
+McDiarmid would simply yield
+\begin{align*}
+    P(|h(X) - \expect{h(X)}| \leq \sqrt{n} + \omega(1)),
+\end{align*}
+which is not good because $\expect{h(X)} \in \Theta(\sqrt{n})$ (exercise!),
+resulting in
+\begin{align*}
+    P(h(X) \geq \expect{h(X)} + \omega(1) + \sqrt{n}) \leq \frac{\expect{h(x)}}{\expect{h(x)} + \omega(1)} \xrightarrow{n \rightarrow \infty} 0,
+\end{align*}
+i.e. our concentration bound converges to 1.
+However, we see that $h$ is $f$-certifiable with $f(s) = s$ by choosing
+$\mathcal I$ as the indices of the largest increasing subsequence.
+Let $m$ be the median of $h(X)$, then by Talagrand
+\begin{align*}
+    P(h(X) \leq m - \lambda\sqrt{m}) P(h(X) \geq m) \leq \exp\left(\frac{-\lambda^2}{4}\right),
+\end{align*}
+and as stated in \autoref{rem:mu_as_med} plus by choosing $\mu \coloneqq m + \lambda \sqrt{m}$,
+we conclude
+\begin{align*}
+    P(|h(X) - m|\geq \lambda \sqrt{m}) \leq 4 \exp\left(\frac{-\lambda^2}{4}\right).
+\end{align*}
+One can show $m \in \Theta(\sqrt{n})$, which implies
+\begin{align*}
+    P(|h(X) - m| \geq \omega(n^{1/4})) \xrightarrow{n \rightarrow \infty} 0.
+\end{align*}

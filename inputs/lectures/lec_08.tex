@@ -74,18 +74,3 @@ Let us summarize the technique we used here as a more general theorem.
         P(f(X) - \expect{(f(X))} \geq \omega(\sqrt{n})) \xrightarrow{n \rightarrow \infty} 0.
     \end{align*}
 \end{theorem}
-Finally, we introduce one more important concentration result.
-As previously shown, \autoref{thm:distance_concentration} (together with its accompanying remark) yielded some concentration bounds.
-Building on this, we can generalize to show following result:
-\begin{theorem}[\vocab{Talagrand's inequality}]
-    Let $x=(X_1, \dots, X_n)$ be a vector of i.i.d.~random variable in $\realnum$ and $A \subseteq \realnum^n$.
-    We define \vocab{Talagrand's Convex Distance} as the distance function
-    \begin{align*}
-        d_T(x,A) \coloneqq \sup_{||\alpha||=1}d_\alpha(x,A).
-    \end{align*}
-    Then, it holds that
-    \begin{align*}
-        d_T(x,A) \geq \frac{1}{\sqrt{n}}d_H(x,A).
-    \end{align*}
-\end{theorem}
-This effectively means any upper bound on $d_T$ is also an upper bound for Hamming distances.
