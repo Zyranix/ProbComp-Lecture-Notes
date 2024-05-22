@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.3.15)  22 MAY 2024 13:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.3.15)  22 MAY 2024 14:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2785,25 +2785,39 @@ Overfull \hbox (27.47742pt too wide) in paragraph at lines 3--3
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 66.
-Package mdframed Info: mdframed detected package amsthm 
- changed the theorem header of amsthm
-(mdframed)              on input line 80.
-Package mdframed Info: Box was splittet wrong
- starting loop to iterate the splitting point
-(mdframed)              on input line 90.
- [23]) (./inputs/lectures/lec_09.tex)
-Overfull \hbox (27.47742pt too wide) in paragraph at lines 40--40
+) (./inputs/lectures/lec_09.tex
+Overfull \hbox (27.47742pt too wide) in paragraph at lines 3--3
 []$[]$ 
  []
 
-[24]
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 5.
+[23]
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 18.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 31.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 42.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 52.
+ [24]
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 74.
+) [25]
 
 Package fancyhdr Warning: \fancyhead's `E' option without twoside option is use
 less.
 (fancyhdr)                Please consider using the `twoside' option on input l
 ine 60.
 
-(./inputs/exercises/exercises.tex [25
+(./inputs/exercises/exercises.tex [26
 
 ] (./inputs/exercises/sheet01.tex
 Package mdframed Info: mdframed detected package amsthm 
@@ -2814,7 +2828,7 @@ ults to 0 on input line 2.
 Package mdframed Info: Box was splittet wrong
  starting loop to iterate the splitting point
 (mdframed)              on input line 49.
- [26]
+ [27]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 51.
@@ -2823,7 +2837,7 @@ Overfull \hbox (8.18639pt too wide) detected at line 75
 []
  []
 
-[27]
+[28]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 82.
@@ -2844,10 +2858,10 @@ Overfull \hbox (17.15126pt too wide) detected at line 127
 Package mdframed Info: You first box width is to small
  mdframed fixed it
 (mdframed)              on input line 130.
-[28]) [29])
+[29]) [30])
 runsystem(makeindex vocabindex.idx)...executed safely (allowed).
 
- (./vocabindex.ind) [30
+ (./vocabindex.ind) [31
 
 
 
@@ -2874,48 +2888,50 @@ Package logreq Info: Writing requests to 'full.run.xml'.
  )
 (\end occurred when \ifx on line 11 was incomplete) 
 Here is how much of TeX's memory you used:
- 63378 strings out of 474104
- 1428392 string characters out of 5745485
- 2466299 words of memory out of 5000000
- 84316 multiletter control sequences out of 15000+600000
+ 63396 strings out of 474104
+ 1428700 string characters out of 5745485
+ 2466328 words of memory out of 5000000
+ 84318 multiletter control sequences out of 15000+600000
  589479 words of font info for 137 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  113i,19n,145p,3460b,1168s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/texlive/texdir/texmf-d
 ist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></opt/texlive/texdir/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmex10.pfb></opt/texlive/texdir/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi10.pfb></opt/texlive/texdir/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmmi5.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmmi7.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmmi8.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr10.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5
-.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></
-opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></opt/t
-exlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/texliv
-e/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></opt/texlive/texd
-ir/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></opt/texlive/texdir/tex
-mf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></opt/texlive/texdir/tex
-mf-dist/fonts/type1/public/amsfonts/symbols/msam7.pfb></opt/texlive/texdir/texm
-f-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></opt/texlive/texdir/texm
-f-dist/fonts/type1/public/cm-super/sfbx0900.pfb></opt/texlive/texdir/texmf-dist
-/fonts/type1/public/cm-super/sfbx1000.pfb></opt/texlive/texdir/texmf-dist/fonts
-/type1/public/cm-super/sfbx1200.pfb></opt/texlive/texdir/texmf-dist/fonts/type1
-/public/cm-super/sfbx1440.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/publi
-c/cm-super/sfbx2074.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-s
-uper/sfcc1200.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/s
-frm0700.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm080
-0.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb>
-</opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></opt/
-texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></opt/texliv
-e/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></opt/texlive/texd
-ir/texmf-dist/fonts/type1/public/cm-super/sfss0900.pfb></opt/texlive/texdir/tex
-mf-dist/fonts/type1/public/cm-super/sfti0600.pfb></opt/texlive/texdir/texmf-dis
-t/fonts/type1/public/cm-super/sfti0700.pfb></opt/texlive/texdir/texmf-dist/font
-s/type1/public/cm-super/sfti1000.pfb>
-Output written on full.pdf (30 pages, 524661 bytes).
+onts/type1/public/amsfonts/cm/cmbx7.pfb></opt/texlive/texdir/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmex10.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/
+public/amsfonts/cm/cmmi10.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmmi5.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmmi7.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmmi8.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmr1
+0.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><
+/opt/texlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></opt/te
+xlive/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></opt/texlive
+/texdir/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></opt/texlive/texd
+ir/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></opt/texlive/texdir/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></opt/texlive/texdir/texmf-dis
+t/fonts/type1/public/amsfonts/symbols/msam10.pfb></opt/texlive/texdir/texmf-dis
+t/fonts/type1/public/amsfonts/symbols/msam7.pfb></opt/texlive/texdir/texmf-dist
+/fonts/type1/public/amsfonts/symbols/msbm10.pfb></opt/texlive/texdir/texmf-dist
+/fonts/type1/public/cm-super/sfbx0900.pfb></opt/texlive/texdir/texmf-dist/fonts
+/type1/public/cm-super/sfbx1000.pfb></opt/texlive/texdir/texmf-dist/fonts/type1
+/public/cm-super/sfbx1200.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/publi
+c/cm-super/sfbx1440.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-s
+uper/sfbx2074.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/s
+fcc1200.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm060
+0.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm0700.pfb>
+</opt/texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></opt/
+texlive/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></opt/texliv
+e/texdir/texmf-dist/fonts/type1/public/cm-super/sfrm1000.pfb></opt/texlive/texd
+ir/texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></opt/texlive/texdir/tex
+mf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></opt/texlive/texdir/texmf-dis
+t/fonts/type1/public/cm-super/sfss0900.pfb></opt/texlive/texdir/texmf-dist/font
+s/type1/public/cm-super/sfti0600.pfb></opt/texlive/texdir/texmf-dist/fonts/type
+1/public/cm-super/sfti0700.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/publ
+ic/cm-super/sfti1000.pfb>
+Output written on full.pdf (31 pages, 561745 bytes).
 PDF statistics:
- 649 PDF objects out of 1000 (max. 8388607)
- 530 compressed objects within 6 object streams
- 211 named destinations out of 1000 (max. 500000)
+ 685 PDF objects out of 1000 (max. 8388607)
+ 561 compressed objects within 6 object streams
+ 227 named destinations out of 1000 (max. 500000)
  181 words of extra memory for PDF output out of 10000 (max. 10000000)
 
