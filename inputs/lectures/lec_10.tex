@@ -1,0 +1,100 @@
+%! TEX root = ../../master.tex
+\lecture[Monte Carlo Sampling. FPRAS counting. $\CSAT$ approximation.]{Mo 22 May 2024}{Monte Carlo Sampling}
+\section{Monte Carlo Sampling}
+We start this section with the problem of approximating $\pi$ using probabilistic methods.
+Following algorithm yields a simple Monte Carlo-based approach by checking if a uniformly generated point
+lies inside a quarter of a circle:
+\newline
+\begin{algorithm}[H]
+    \label{algo:approx_pi_mc}
+    \SetAlgoLined
+    \For{$i=1,\dots,m$}{
+        $(X_i,Y_i) \sim [0,1]^2$\\
+        $A_i \leftarrow \mathbf{1}(X_i^2+Y_i^2 < 1)$\\
+    }
+    return $\tilde{\pi} \leftarrow \frac{4}{m}\sum_{i=1}^{m}A_i$
+    \caption{Approximate $\pi$}
+\end{algorithm}
+
+While it is clear that this approach can approximate $\pi$ infinitely good, it is more interesting
+\emph{how fast} it will approximate $\pi$ up to a certain precision for a large enough probability.
+Following notion formalizes the preceding statement.
+\begin{definition}
+    We say that $X \in \realnum$ is an $(\eps, \delta)$-approximation for $V \in \realnum$
+    if $P(|X-V| \leq \eps V) \geq 1 - \delta$
+\end{definition}
+Since we work in the context of algorithms, we also introduce a new complexity class that is useful in this domain.
+\begin{definition}[\vocab{Fully Polynomial Randomized Approximation Scheme}]
+    A fully polynomial randomized approximation scheme (short: $\FPRAS$) for a function $f$
+    on an input $x$ and parameters $0 < \eps, \delta < 1$ is an algorithm
+    that returns in time $poly(\frac{1}{\eps}, \ln(\frac{1}{\delta}), |x|)$ an $(\eps, \delta)$-approximation
+    for $f(x)$.
+\end{definition}
+Then, for our approximation of $\pi$, we can conclude using \autoref{thm:mcdiarmid}
+\begin{align*}
+    P\left(\left|\pi - \tilde{\pi}\right| \geq \eps \pi\right)
+     & = P\left(\left|\pi - \frac{4\sum_i X_i}{m}\right| \geq \eps \pi\right)                                                                                   \\
+     & = P\left(\left|\frac{m \pi}{4} - \sum_i X_i\right| \geq \eps \frac{m \pi}{4}\right)                                                                      \\
+     & = P\left(\left|\expect{\sum_i X_i} - \sum X_i\right| \geq \eps \expect{\sum_i X_i}\right) \leq 2\exp\left(\frac{-\mu \eps^2}{3}\right) \eqqcolon \delta,
+\end{align*}
+which yields for corresponding choice of $\mu$
+\begin{align}
+    \exp\left(\frac{-m \pi \eps^2}{12}\right) \leq \frac{\delta}{2} \Longleftrightarrow m \geq \frac{12 \ln(\frac{2}{\delta})}{\pi \eps^2}.
+\end{align}
+This is polynomial in $\eps^{-1}, \ln(\delta^{-1}), |x|$, and therefore in $\FPRAS$!
+
+..\todo{counting stuff}
+Monte Carlo approaches also enables us to approximate values for (difficult) counting problems.
+In general, we will use following approach:
+\begin{enumerate}
+    \item Define a set $|S| = V$ for the value $V$ we want to approximate.
+    \item Define a sample space $\Omega$ from which we sample.
+    \item Estimate $\frac{|S|}{|\Omega|} \eqqcolon \hat r$ by generating samples.
+    \item Return $\hat r |\Omega|$.
+\end{enumerate}
+A famous example where we can apply this approach is $\CSAT$,
+i.e. determing the number of valid assignments for
+a boolean CNF $\phi$ with $n$ variables.
+Denote with $C(\phi)$ said count of valid assignments, and notice that
+\begin{align}
+    C(\NOT \phi) = 2^n - C(\phi),
+\end{align}
+i.e. $\NOT \phi$ is the equivalent problem stated in DNF.
+We will continue to work with DNF.
+
+Consider following helpful result first.
+\begin{lemma}
+    Let $X_1, \dots, X_m$ be i.i.d. $0-1$ random variables with $\mu = \expect{X_i}$.
+    If $m \geq \frac{3 \ln (\frac{2}{\delta})}{\eps^2 \mu}$, then
+    \begin{align*}
+        P\left(\left|\frac{1}{m}\sum_i X_i - m\mu \right| \geq \eps \mu\right) \leq \delta.
+    \end{align*}
+\end{lemma}
+\begin{proof}
+    It holds that
+    \begin{align*}
+        P\left(\left|\sum_i X_i - m\mu \right| \geq \eps m \mu\right) \leq 2 \exp \left(\frac{-m \mu \eps^2}{3}\right) \leq \delta,
+    \end{align*}
+    which implies the lemma.
+\end{proof}
+We can state following algorithm for DNF-based $\CSAT$.
+\newline
+\begin{algorithm}[H]
+    \label{algo:approx_dnf_count_sat}
+    \SetAlgoLined
+    \For{$i=1,\dots,t$}{
+        $SC_i \leftarrow \left\{(i,a) : a \text{ satisfies clause } i \right\}$\\
+    }
+    $\Omega \leftarrow \left\{(i,a) : a \text{ satisfies clause } i \right\}$\\
+    $|\Omega| \leftarrow \sum_i |SC_i|$\\
+    $C(\phi) = |\cup SC_i|$\\
+    return ??
+    \caption{Approximate $C(\phi)$}
+\end{algorithm}
+We can show that $\frac{1}{t}$ is a lower bound for $\expect{X_i}$, which implies the need for
+\begin{align}
+    m \geq \frac{3t \ln(\frac{2}{\delta})}{\eps^2}
+\end{align}
+samples to get a $(\eps, \delta)$-approximation.
+Again, this is a $\FPRAS$ algorithm!
+
