@@ -1,0 +1,74 @@
+%! TEX root = ../../master.tex
+\lecture[Equivalence of sampling and counting. Application in matchings.]{Mi 29 May 2024}{Sampling $\Leftrightarrow$ Counting}
+\begin{definition}[\vocab{Almost Uniform Sampler}]
+    An almost uniform sampler is an algorithm for a set $S$ that
+    outputs a random element of $S$ with probability distribution $A$ such that
+    \begin{align*}
+        || A(S) - \mathcal{U}(S)||_V \leq \delta
+    \end{align*}
+    for $\delta \in (0,1)$.
+
+    We call it a \vocab{Fully Polynomial Almost Uniform Sampler} ($\FPAUS$)
+    if its runtime is in $poly(|x|, \log(1/\delta))$ (using $|x|$ as decoded size of $x$).
+\end{definition}
+Define with $\mathcal M : \mathcal G \rightarrow \mathcal P(E(G))$ a function that outputs all matchings of a graph $G$.
+We want to estimate $\mathcal M(G)$ for general graphs.
+Consider following trick, which uses $G_i \coloneqq (V(G), \{e_1, \dots, e_i\})$
+as incrementally growing subgraphs (with $G_0$ as the graph with no edges).
+Then, we can rephrase our desired value as a telescopic product
+\begin{align}
+    |\mathcal M(G_{m})| = \underbrace{\frac{|\mathcal M(G)_{m}|}{|\mathcal M(G)_{m-1}|}}_{\coloneqq p_m^{-1}}\cdot \hdots \cdot \underbrace{\frac{|\mathcal M(G)_{1}|}{|\mathcal M(G)_{0}|}}_{\coloneqq p_1^{-1}} \cdot \underbrace{|\mathcal M(G)_{0}|}_{=1}.
+\end{align}
+In particular, we introduce the ratios $p_i$. Notice that every added edge accounts for up to two new (distinct) matchings per old matching, therefore
+\begin{align}
+    1 \geq p_i \geq \frac{1}{2}.
+\end{align}
+Since we now try to apply Monte Carlo Sampling for $p_i$, this ensures us that the sample space size does not explode,
+which in the case for $\CSAT$ restricted us from using a simple sampling approach.
+
+\begin{lemma}
+    Let $G$ be a graph and consider its matchings $\mathcal M(G)$.
+    Then there is an $\FPAUS$-algorithm for $\mathcal M(G)$ exactly iff there is an $\FPRAS$-algorithm for $|\mathcal M(G)|$.
+\end{lemma}
+\begin{proof}[Proof of $\rightarrow$]
+    Assume we use $\FPAUS$ to estimate $p_i$.
+    We will show that
+    \begin{align}
+        P\left(\left| \prod_i \overline Z_i - \prod_i p_i  \right| \leq e^{\eps}\prod_i p_i \right)  \geq \frac{3}{4}.
+    \end{align}
+
+    Set $\delta = \frac{\eps}{6m}$ and let $Z_i^{(j)}$ be the indicator variable for the case
+    if the $j$th sample is in $\mathcal M(G_{i-1})$.
+    Then, $\overline{Z}_i = \sum_{i=1}^{s} \frac{Z_i^{(j)}}{s}$.
+    Since $Z_i^{(j)}$ is sampled almost uniformly by assumption, we know that in the worst case
+    \begin{align*}
+        p_i - \frac{\eps}{6m} \leq \mu_i \leq p_i + \frac{\eps}{6m}.
+    \end{align*}
+    Applying $p_i \geq \frac{1}{2}$ gives the estimates
+    \begin{align*}
+        p_i (1 - \frac{\eps}{3m}) \leq \mu_i \leq p_i (1 + \frac{\eps}{3m}).
+    \end{align*}
+    Using $e^x \geq 1 + x$ and $e^{-\frac{x}{k+1}} \leq 1 - \frac{x}{k}$ for $0 \leq x \leq 1$
+    yields
+    \begin{align*}
+        \exp\left(-\frac{\eps}{3m}\right)p_i \leq \mu_i \leq \exp\left(\frac{\eps}{3m}\right)p_i.
+    \end{align*}
+    By Chernoff, we can show that $s \geq 1296 \frac{m^2}{\eps^2}\ln(m)c$.
+    However, we can show a better lower bound of $s > \frac{75m}{\eps^2}$:
+    \begin{align*}
+        \variance{Z_i} = \expect{(Z_i - \mu_i)^2} = P(Z_1 = 1)(1-\mu_i)^2 + P(Z_i=0)\mu_i^2 = \mu_i(1-\mu_i)
+    \end{align*}
+    \begin{align*}
+        \frac{\variance{\overline{Z}_i}}{\mu_i^2}       & \leq \frac{\sum_j \variance{Z_i^{(j)}}}{\mu_i^2} \leq \frac{2}{5} \leq \frac{\eps^2}{37m} \\
+        \frac{\variance{1-\overline{Z}_i}}{(1-\mu_i)^2} & \leq \frac{\sum_j \variance{Z_i^{(j)}}}{\mu_i^2} \leq \frac{2}{5} \leq \frac{\eps^2}{37m} \\
+    \end{align*}
+    In summary,
+    \begin{align*}
+        \frac{\variance{\prod_i \overline{Z}_i}}{\prod_i \mu_i^2} & = \frac{\prod_i \expect{\overline{Z}_i^2}}{\prod_i \mu_i^2} - \frac{\prod_i \expect{\overline{Z}_i}^2}{\prod_i \mu_i^2} = \prod_i \left(1 + \frac{\variance{\overline Z_i}}{\mu_i^2}   \right) - 1 \\
+                                                                  & \leq \left(1  + \frac{\eps^2}{37m}  \right)^m - 1 \leq \exp\left(\frac{\eps^2}{37m}\right) - 1 \leq \frac{\eps^2}{36}.
+    \end{align*}
+    Finally, using Chebyshev's inequality,
+    \begin{align*}
+        P\left(\left|\prod_i \overline Z_i - \prod_i \mu_i \right| \geq \frac{\eps}{3}\prod_i \mu_i\right) \leq \frac{\eps^2}{36}\frac{3^2}{\eps^2} = \frac{1}{4}.
+    \end{align*}
+\end{proof}
