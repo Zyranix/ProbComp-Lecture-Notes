@@ -50,8 +50,10 @@
     Let us consider some coupled Markov chains.
     \begin{enumerate}
         \item Let $Z$ be a simple random walk on $K_n$.
-              Then $(X,Y)$ always land on the same state except if $X$ chose the position of $Y$.
+              Then $(X,Y)$ always land on the same state except if $X$ chose the position of $Y$ (which happens with probability $1/n$).
+              So, the hitting time behaves like a geometric distribution with parameter $1/n$.
         \item Let $Z$ be a simple random walk on a complete bipartite graph with self-loops.
-              Then (not enough time).
+              Then $X,Y$ behave independently, except if they lie on the same side of the bipartite graph.
+              Only then they start to choose the same vertex.
     \end{enumerate}
 \end{example}

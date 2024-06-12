@@ -1,0 +1,114 @@
+%! TEX root = ../../master.tex
+\lecture[Entropy. Random sources.]{We 12 June 2024}{Notions of entropy}
+\section{Sources of randomness}
+Sources of randomness are crucial for the implementation of \emph{random algorithms}.
+Typical applications are
+\begin{itemize}
+    \item Markov Chain Monte Carlo (MCMC)
+    \item simulation of distributions (i.e. by using a uniform distribution)
+    \item cryptographic applications
+\end{itemize}
+Theoretic analysis of these assumes a \emph{perfectly random} source (usually uniform).
+In reality, surces of randomness are \emph{weak} or highly imperfect.
+\vocab{Randomness Extractors} aim to shrink the gap between theory and practice;
+take as input
+\begin{enumerate}
+    \item a weak source of randomness satisfying as few assumptions as possible,
+    \item a small \emph{truly random} (i.e. truly uniform) seed,
+\end{enumerate}
+and output an (almost) uniform random variable.
+
+\vocab{Entropy} is a way of measuring \emph{how random} a distribution is.
+We shall use it to characterize \emph{weakness} of random sources.
+There are different established definitions of entropy.
+\begin{definition}[\vocab{Shannon Entropy}]
+    Let $\mu$ be a probability distribution on a countable set $E$.
+    Then we define
+    \begin{align*}
+        H(\mu) \coloneqq \sum_{x \in E}\mu(x) \cdot \log\left(\frac{1}{\mu(x)}\right)=-\expect{\log(\mu(X))}
+    \end{align*}
+    (assuming $X \sim \mu$ for the latter version) as the \emph{Shannon entropy}.
+\end{definition}
+Shannon entropy was originally established in the context of information theory and
+tries to quantify information density.
+In fact, randomness and information are tightly coupled; generally, the more \emph{random}
+an information source is, the less \emph{useful} information it contains;
+this is reflected in $H$: the larger its value, the less information (or \emph{structure}) is encoded in $\mu$.
+\begin{example}
+    Consider $E=\{0,1\}$.
+    Intuition says $\mu \sim Ber(\frac{1}{2})$ is the \emph{most random} distribution on $E$.
+    If we use Shannon entropy to quantify this intuition, we get
+    \begin{align*}
+        H(\mu) = \frac{1}{2}\log(2) + \frac{1}{2}\log(2) = \log(2).
+    \end{align*}
+\end{example}
+More generally, for any $E, |E| < \infty$ and $\mu \sim \mathcal U(E)$ we can deduce
+\begin{align*}
+    H(\mu) = \log(|E|)
+\end{align*}
+In fact, we can prove that the entropy is maximized in such cases, which adheres to our notion of \emph{most random}.
+First, we introduce a helpful result.
+\begin{definition}[\vocab{Relative Entropy}]
+    Let $\mu, \eta$ be two probability distributions on a countable set $E$.
+    Then we define
+    \begin{align*}
+        H(\mu || \eta) = \sum_{x \in E}\mu(x)\log\left(\frac{\mu(x)}{\eta(x)}\right) = -\expect{\log\left(\frac{\eta(X)}{\mu(X)}\right)}
+    \end{align*}
+    (assuming $X \sim \mu$ for the latter version) as the \emph{relatie entropy}.
+\end{definition}
+\begin{lemma}
+    The relative entropy satisfies $H(\mu || \eta) \geq 0$ with equality iff $\mu = \eta$.
+\end{lemma}
+\begin{proof}
+    First, using $X \sim \mu$ and Jensen's inequality (notice $\log$ is concave)
+    \begin{align*}
+        -H(\mu || \eta)  = \sum_{x \in E}\mu(x)\log\left(\frac{\mu(x)}{\eta(x)}\right) \leq \log\left(\sum_{x \in E}\mu(x)\frac{\eta(x)}{\mu(x)}\right) = \log(1) = 0.
+    \end{align*}
+    Equality holds if and only if $\frac{\eta(x)}{\mu(x)}$ are equal for all $x \in E$,
+    i.e. $\eta = \mu$.
+\end{proof}
+Now following result is quite easy to deduce
+\begin{theorem}
+    Let $E$ be finite.
+    \begin{enumerate}[(i)]
+        \item $H(\mu)$ is \emph{maximal} if $\mu \sim \mathcal U(E)$.
+        \item $H(\mu)$ is \emph{minimal} if $\mu = \delta_x$ for any $x \in E$.
+              In particular, $H(\mu) = 0$.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    The second part is trivial since $H(\mu) = 1 \cdot \log(1) = 0$ and $H(\mu) \geq 0$, since
+    any finite probability measure $\mu'$ satisfies $0 \leq \mu' \leq 1$.
+
+    For the first part we use relative entropy.
+\end{proof}
+
+Shannon entropy measures the amount of randomess \emph{on average} of a distribution.
+However, sometimes we want to consider the \emph{worst case} randomness.
+\begin{definition}[\vocab{Min-Entropy}]
+    Let $\mu$ be a probability distribution on a countable set $E$.
+    We define the \emph{min-entropy} of $\mu$ as
+    \begin{align*}
+        H_\infty(\mu) \coloneqq \min_{x \in E}\log\left(\frac{1}{\mu(x)}\right).
+    \end{align*}
+\end{definition}
+Note that $H_\infty(\mu) \geq k$ iff $\mu(x) \leq 2^{-k}$ for all $x\in E$.
+So, if $E = \{0,1\}^k$, the uniform distribution clearly has the largest min-entropy.
+
+Turning back to our random number generation,
+suppose we want to build a seed-less extractor
+that takes as input any random variable on $\{0,1\}^n$
+and should output $\mathcal U(\{0,1\})$.
+Assume that our input $X$ satisfies
+\begin{align} \label{eq:naive_extractor_req}
+    H_\infty(X) \geq n-1,
+\end{align}
+i.e. no bitstring occurs with probability higher than $2^{n-1}$.
+Any function $f:\{0,1\}^n \rightarrow \{0,1\}$ must satisfy one of
+\begin{align*}
+    |\{x \in \{0,1\}^n \mid f(x)=b\}| \geq 2^{n-1}
+\end{align*}
+for $b \in \{0,1\}$.
+Let $A$ be the set that satisfy this requirement, and let $Y \sim \mathcal U(A)$.
+Then $H_\infty(Y) \geq n-1$, but $f(Y)$ is deterministic.
+This implies our initial assumption \eqref{eq:naive_extractor_req} is already too restrictive!
