@@ -1,0 +1,57 @@
+%! TEX root = ../../master.tex
+\lecture[Path coupling.]{Mo 10 June 2024}{Path coupling.}
+\begin{theorem}[Path Coupling]
+    Let $Z$ be a Markov chain on a graph $G$ that can only move between adjacent states.
+    If $(X,Y)$ is a coupling of $Z$ (for $X,Y$ adjacent) with $\expect{d(X_i,Y_i)}_{X,Y} \leq p$
+    where $d$ is the graph distance and $p < 1$, then
+    \begin{align*}
+        \tau(\eps) \leq \frac{1}{1-p} \ln\left(\frac{\diam(G)}{\eps}\right).
+    \end{align*}
+\end{theorem}
+\begin{proof}
+    Use $D \coloneqq \diam(G)$.
+    The key fact of the proof is that
+    \begin{align}
+        (x,y) \mapsto \expect{d(X,Y)}_{X,Y}
+    \end{align}
+    is a \emph{metric} for $X,Y$ following any distribution on $V$.
+    Let $X,Y$ be any vertices on $V$, and let $x = v_0, \dots, v_k, v_{k+1}=y$
+    be any path from $x$ to $y$ in $G$.
+    Then by assumption
+    \begin{align*}
+        \expect{d(x_1,y_1)}_{X,Y} \leq \sum_{i=0}^{k} \expect{d(x_i,v_i)}_{v_i,v_{i+1}} \leq \sum_{i=0}^{k} p = p (k+1).
+    \end{align*}
+    Since the path from $x$ to $y$ was arbitrary, we just take the shortest.
+    Then,
+    \begin{align}\label{eq:dist_coupling_proof}
+        \expect{d(X_1,Y_1)}_{x,y} \leq p d(x,y),
+    \end{align}
+    and by Markov's inequality
+    \begin{align*}
+        P_{X,Y}(X_1 \neq Y_1) = P_{X,Y}(d(X_1,Y_1) > 0) \leq \expect{d(X_1,Y_1)}_{X,Y} \leq p d(X,Y).
+    \end{align*}
+    Thus by Markov property
+    \begin{align*}
+        P_{x,y}(X_t \neq Y_t) & \leq \expect{d(X_t,Y_t)}_{x,y}
+        = \expect{\expect{X_t \neq Y_t \mid X_{t-1},Y_{t-1}}_{x,y}}_{x,y}                                                                                         \\
+                              & = \expect{\expect{d(X_1, Y_1)}_{X_{t-1},Y_{t-1}}}_{X,Y}                                                                           \\
+                              & \overset{\eqref{eq:dist_coupling_proof}}{\leq} p \cdot \expect{d(X_{t-1}, Y_{t-1})}_{X,Y} \leq \cdots \leq p^t d(x,y) \leq p^t D.
+    \end{align*}
+    If $p^t D \leq \eps$, then $\tau(\eps) \leq t$, so using $e^x \geq 1+x$
+    \begin{align*}
+        \exp\left(-(1-p)t\right) \leq (1 - (1-p))^t = p^t \leq \frac{\eps}{D}
+    \end{align*}
+    and
+    \begin{align*}
+        t \geq \frac{1}{1-p}\ln\left(\frac{D}{\eps}\right).
+    \end{align*}
+\end{proof}
+\begin{example}
+    Let us consider some coupled Markov chains.
+    \begin{enumerate}
+        \item Let $Z$ be a simple random walk on $K_n$.
+              Then $(X,Y)$ always land on the same state except if $X$ chose the position of $Y$.
+        \item Let $Z$ be a simple random walk on a complete bipartite graph with self-loops.
+              Then (not enough time).
+    \end{enumerate}
+\end{example}
