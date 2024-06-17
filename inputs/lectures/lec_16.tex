@@ -1,0 +1,59 @@
+%! TEX root = ../../master.tex
+\lecture[Randomness extractors.]{Mo 17 June 2024}{Randomness extractors}
+We will now try to introduce a seed in order to improve our number generation.
+\begin{definition}[\vocab{Random Extractor}]
+    An algorithm $\xi : \{0,1\}^n \times \{0,1\}^d \rightarrow \{0,1\}^m$
+    is called an \emph{extractor} of error $\eps > 0$ if
+    for all random variables $X$ in some class it holds (using binary uniform variables $U_x$ of dimension $x$) that
+    \begin{align*}
+        ||\xi(X, U_d) - U_m||_{TV} < \eps.
+    \end{align*}
+    We call the first input part the \emph{weak source} and the second part the \emph{seed}.
+    If the class of inputs is $X$ such that
+    \begin{align*}
+        H_\infty(X) \geq k,
+    \end{align*}
+    then $\xi$ is called a \emph{$(k,\eps)$-extractor}.
+\end{definition}
+We can show that there always exist a random extractor under certain conditions.
+\begin{lemma}
+    Let $d = \log\frac{n}{\eps^2}, m = k + \log(n)$.
+    Then there exists a $(k, \eps)$-extractor.
+\end{lemma}
+The proof is using the probabilistic method, however notice that this means it is non-constructive
+and does not yield a method to generate an actual extractor.
+We skip the proof for reasons of brevity.
+
+Let us take a look  at the seed length:
+The case $d \in O(\log\left(\frac{n}{\eta}\right))$
+is important for a few reasons.
+\begin{definition}[\vocab{Bounded-error Probabilistic Polynomial Time Algorithm}]
+    We call a random algorithm $A : W \times Z \rightarrow N$
+    that is allowed to generate random bit sequences $Z$
+    a \emph{BPP-algorithm}
+    if it computes a goal function $f : W \rightarrow N$ such that
+    \begin{enumerate}
+        \item it runs in polynomial time,
+        \item outputs the correct solution $A(w,z)=f(z)$ with probability over $2/3$.
+    \end{enumerate}
+\end{definition}
+Consider a BPP algorithm $A$ for a goal $f$.
+Extractors allow us to simulate such algorithms in the following way:
+\begin{enumerate}[(i)]
+    \item Take input $w$ and instance of weak source $X \in \{0,1\}^n$.
+    \item Compute $\xi(x,y)$ for all $y \in \{0,1\}^d$.
+    \item Compute $A(w,\xi(x,y))$ for all $y \in \{0,1\}^d$.
+\end{enumerate}
+This has a runtime of $2^d$, therefore we can guarantee polynomial runtime if
+$d \in O(\log n)$.
+
+Another observation arises in following construct:
+For a random variable $X \in \{0,1\}^n$ and any function
+$f : \{0,1\}^n \times \{0,1\}^d \rightarrow \{0,1\}^m$
+it can be shown that
+$||\xi(X, U_d) - U_m||_{TV} < \eps $
+implies that
+$||X - Y||_{TV} < \eps$ for some $Y$ with $H_\infty(Y) \geq m - d - 1$.
+If we assume that $\xi$ is a $(k, \eps)$-extractor, then
+$H_\infty(X) \geq k \approx H_\infty(Y)$ implies $d \gtrsim m-k-1$.
+If $m = k + \log(n)$, then even $d \gtrsim \log(n)$, once again yielding a logarithmic bound.

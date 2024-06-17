@@ -21,6 +21,8 @@ and output an (almost) uniform random variable.
 \vocab{Entropy} is a way of measuring \emph{how random} a distribution is.
 We shall use it to characterize \emph{weakness} of random sources.
 There are different established definitions of entropy.
+Notice that for the remainder of this section we denote with $\log$ the binary logarithm $\log_2$
+as this is the usual notion in the context of information theory.
 \begin{definition}[\vocab{Shannon Entropy}]
     Let $\mu$ be a probability distribution on a countable set $E$.
     Then we define
@@ -55,14 +57,15 @@ First, we introduce a helpful result.
         H(\mu || \eta) = \sum_{x \in E}\mu(x)\log\left(\frac{\mu(x)}{\eta(x)}\right) = -\expect{\log\left(\frac{\eta(X)}{\mu(X)}\right)}
     \end{align*}
     (assuming $X \sim \mu$ for the latter version) as the \emph{relatie entropy}.
+    Literature also refers to it as the \vocab{Kullback-Leibler Divergence}.
 \end{definition}
-\begin{lemma}
+\begin{lemma} \label{thm:relent_atleast0}
     The relative entropy satisfies $H(\mu || \eta) \geq 0$ with equality iff $\mu = \eta$.
 \end{lemma}
 \begin{proof}
-    First, using $X \sim \mu$ and Jensen's inequality (notice $\log$ is concave)
+    First, using $X \sim \mu$ and Jensen's inequality (notice $\log$ is strictly concave)
     \begin{align*}
-        -H(\mu || \eta)  = \sum_{x \in E}\mu(x)\log\left(\frac{\mu(x)}{\eta(x)}\right) \leq \log\left(\sum_{x \in E}\mu(x)\frac{\eta(x)}{\mu(x)}\right) = \log(1) = 0.
+        H(\mu || \eta)  = \sum_{x \in E}\mu(x)\log\left(\frac{\mu(x)}{\eta(x)}\right) \geq -\log\left(\sum_{x \in E}\mu(x)\frac{\eta(x)}{\mu(x)}\right) = -\log(1) = 0.
     \end{align*}
     Equality holds if and only if $\frac{\eta(x)}{\mu(x)}$ are equal for all $x \in E$,
     i.e. $\eta = \mu$.
@@ -71,7 +74,7 @@ Now following result is quite easy to deduce
 \begin{theorem}
     Let $E$ be finite.
     \begin{enumerate}[(i)]
-        \item $H(\mu)$ is \emph{maximal} if $\mu \sim \mathcal U(E)$.
+        \item $H(\mu)$ is \emph{maximal} if $\mu \sim \mathcal U(E)$. In particular, $H(\mu) = \log(|E|)$.
         \item $H(\mu)$ is \emph{minimal} if $\mu = \delta_x$ for any $x \in E$.
               In particular, $H(\mu) = 0$.
     \end{enumerate}
@@ -80,7 +83,15 @@ Now following result is quite easy to deduce
     The second part is trivial since $H(\mu) = 1 \cdot \log(1) = 0$ and $H(\mu) \geq 0$, since
     any finite probability measure $\mu'$ satisfies $0 \leq \mu' \leq 1$.
 
-    For the first part we use relative entropy.
+    For the first part we use relative entropy. Let $\mu$ be any distribution over $E$
+    and $\eta \sim \mathcal U(E)$.
+    It holds by \autoref{thm:relent_atleast0} that
+    \begin{align*}
+        0 & \leq H(\mu || \eta) = \sum_{x \in X} \mu(x) \log\left(\frac{\mu(x)}{\eta(x)}\right)   \\
+          & = -\sum_{x \in X}\mu(x) \log (\mu(x)^{-1}) + \sum_{x \in X} \mu(x) \log(\eta(x)^{-1}) \\
+          & = -H(\mu) + \log(|E|).
+    \end{align*}
+    Therefore, $H(\mu) \leq \log(|E|)$ with equality iff $\mu = \eta$.
 \end{proof}
 
 Shannon entropy measures the amount of randomess \emph{on average} of a distribution.
@@ -99,16 +110,18 @@ Turning back to our random number generation,
 suppose we want to build a seed-less extractor
 that takes as input any random variable on $\{0,1\}^n$
 and should output $\mathcal U(\{0,1\})$.
-Assume that our input $X$ satisfies
+Assume that our input $X$ satisfies the rather strict condition
 \begin{align} \label{eq:naive_extractor_req}
     H_\infty(X) \geq n-1,
 \end{align}
 i.e. no bitstring occurs with probability higher than $2^{n-1}$.
-Any function $f:\{0,1\}^n \rightarrow \{0,1\}$ must satisfy one of
+Therefore, any generator function $f:\{0,1\}^n \rightarrow \{0,1\}$ must satisfy one of
 \begin{align*}
     |\{x \in \{0,1\}^n \mid f(x)=b\}| \geq 2^{n-1}
 \end{align*}
 for $b \in \{0,1\}$.
-Let $A$ be the set that satisfy this requirement, and let $Y \sim \mathcal U(A)$.
-Then $H_\infty(Y) \geq n-1$, but $f(Y)$ is deterministic.
-This implies our initial assumption \eqref{eq:naive_extractor_req} is already too restrictive!
+We now try to construct an adversary input variable:
+Let $A_b$ be the set of inputs mapping to the same output that satisfies previous requirement,
+and let $Y \sim \mathcal U(A_b)$.
+Then $H_\infty(Y) \geq n-1$ since $f(A_b) = b$ and $|A_b| \geq 2^{n-1}$,
+which shows that even with a quite strict condition we cannot construct a seedless generator.
