@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.6.5)  12 JUN 2024 14:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.6.5)  17 JUN 2024 14:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2548,15 +2548,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 2--9
 
 [2
 
-] (./full.lec)
+] (./full.lec
+
+[3
+
+])
 \tf@lec=\write9
 \openout9 = `full.lec'.
 
 
-
-[3
-
-]
 
 [4] (./inputs/lectures/lec_01.tex
 LaTeX Font Info:    Trying to load font information for T1+cmss on input line 6
@@ -2951,33 +2951,46 @@ Overfull \hbox (27.47742pt too wide) in paragraph at lines 3--3
 [31]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 24.
+(mdframed)              on input line 26.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 38.
+(mdframed)              on input line 40.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 51.
-Package mdframed Info: Box was splittet wrong
- starting loop to iterate the splitting point
-(mdframed)              on input line 58.
+(mdframed)              on input line 53.
 
 
 [32]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 60.
+(mdframed)              on input line 62.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 72.
+(mdframed)              on input line 75.
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
-(mdframed)              on input line 88.
-)
+(mdframed)              on input line 99.
 
-[33]
 
-[34]
+[33]) (./inputs/lectures/lec_16.tex
+Overfull \hbox (27.47742pt too wide) in paragraph at lines 3--3
+[]$[]$ 
+ []
+
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 4.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 20.
+Package mdframed Info: mdframed detected package amsthm 
+ changed the theorem header of amsthm
+(mdframed)              on input line 30.
+
+
+[34])
+
+[35]
 
 Package fancyhdr Warning: \fancyhead's `E' option without twoside option is use
 less.
@@ -2986,7 +2999,7 @@ ine 60.
 
 (./inputs/exercises/exercises.tex
 
-[35
+[36
 
 ] (./inputs/exercises/sheet01.tex
 Package mdframed Info: mdframed detected package amsthm 
@@ -2999,7 +3012,7 @@ Package mdframed Info: Box was splittet wrong
 (mdframed)              on input line 49.
 
 
-[36]
+[37]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 51.
@@ -3010,7 +3023,7 @@ Overfull \hbox (8.18639pt too wide) detected at line 75
 
 
 
-[37]
+[38]
 Package mdframed Info: mdframed detected package amsthm 
  changed the theorem header of amsthm
 (mdframed)              on input line 82.
@@ -3033,14 +3046,14 @@ Package mdframed Info: You first box width is to small
 (mdframed)              on input line 130.
 
 
-[38])
-
 [39])
+
+[40])
 runsystem(makeindex vocabindex.idx)...executed safely (allowed).
 
  (./vocabindex.ind)
 
-[40
+[41
 
 
 
@@ -3067,10 +3080,10 @@ Package logreq Info: Writing requests to 'full.run.xml'.
  )
 (\end occurred when \ifx on line 11 was incomplete) 
 Here is how much of TeX's memory you used:
- 63763 strings out of 473600
- 1436800 string characters out of 5730721
- 2501551 words of memory out of 5000000
- 85098 multiletter control sequences out of 15000+600000
+ 63785 strings out of 473600
+ 1437256 string characters out of 5730721
+ 2502577 words of memory out of 5000000
+ 85104 multiletter control sequences out of 15000+600000
  589479 words of font info for 137 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  113i,19n,145p,3460b,1168s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -3107,10 +3120,10 @@ t/fonts/type1/public/cm-super/sfss0900.pfb></opt/texlive/texdir/texmf-dist/font
 s/type1/public/cm-super/sfti0600.pfb></opt/texlive/texdir/texmf-dist/fonts/type
 1/public/cm-super/sfti0700.pfb></opt/texlive/texdir/texmf-dist/fonts/type1/publ
 ic/cm-super/sfti1000.pfb>
-Output written on full.pdf (40 pages, 606157 bytes).
+Output written on full.pdf (41 pages, 614745 bytes).
 PDF statistics:
- 831 PDF objects out of 1000 (max. 8388607)
- 690 compressed objects within 7 object streams
- 296 named destinations out of 1000 (max. 500000)
+ 854 PDF objects out of 1000 (max. 8388607)
+ 711 compressed objects within 8 object streams
+ 309 named destinations out of 1000 (max. 500000)
  197 words of extra memory for PDF output out of 10000 (max. 10000000)
 
