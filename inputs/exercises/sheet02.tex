@@ -36,9 +36,18 @@ Let $X=(X_1,\dots, X_n), Y=(Y_1,\dots,Y_n)$ be two random strings of i.i.d chara
 The longest common subsequence is definied as the longest pair of sequences $i_1,i_2,\dots$ and $j_1,j_2,\dots$ such that $X_{i_1}=Y_{j_1}$ etc.
 Also, define $Z$ as the singular long sequence of $2n$ i.i.d. random variables by concatenating $X$ to $Y$.
 \begin{enumerate}[(a)]
-    \item The expected length $l$ of the longest common subsequence satisfies $a < l < b$.
+    \item The expected length $l$ of the longest common subsequence for alphabet size $\Gamma$ satisfies $\frac{1}{\Gamma}n < l$.
+    There is also an upper bound $l/n < c_2 < 1$ whose discovery we leave as an exercise to the reader.
     \begin{proof}
-        ddd
+        Consider following problem: Find the longest common subsequence in $Y$ that is a substring starting in position $0$ in $X$.
+        In other words, we fix the subsequence in $X$ and try to find matching characters in $Y$.
+        This can be done easily using a greedy approach, i.e. if you are not yet at the end of $Y$ and already found a subsequence of length $k$, from your current position on find the next possible index in $Y$ that contains the character $X_{k+1}$.
+        The number of steps until we find a matching character in $Y$ is geometrically distributed with parameter $1/\Gamma$, so we expect to need $k$ steps.
+        Since every character in $Y$ has an independent probability of $1/k$ of matching with the respective value in $X$, the total number of expected matches is $n/k$ by linearity.
+        
+        Since our problem yields a lower bound of the expected length, we have shown $\frac{n}{k} \leq l$.
+        Strict inequality follows by repeating the process for another starting position in $X$ and taking the maximum of the respective output length.
+        The sole existence of instances such that this increases our lower bound suffices to disprove equality, and we do not need to do any exact math with highly correlated processes.
     \end{proof}
     \item  
     Let $h$ be the function that maps $Z$ to the length of the longest common subsequence.
@@ -77,8 +86,55 @@ Also, define $Z$ as the singular long sequence of $2n$ i.i.d. random variables b
 \end{enumerate}
 \end{aufgabe}
 \begin{aufgabe}
-3
+Let $X$ be the simple random walk on $\mathbb{Z}$ with $X_0 = 0$ and $M_n = \max_{0 \leq i \leq n}X_i$ the running maximum. For $1 \leq i \leq n$ we define $E_i := X_i - X_{i-1}$. Note that $X_k = \sum_{i = 1}^kE_k$.
+\begin{enumerate}[(a)]
+    \item Since $X_n$ is the sum of $n$ independent random variables with variance $Var[E_i] = 1$, we know that $Var[X_n] = n$. By Kolmogorov's inequality, it holds for $\lambda > 0$ that
+    $$P(M_n \geq \lambda) \leq \frac{Var[X_n]}{\lambda^2}.$$
+    For $\lambda \in \omega(\sqrt{n})$ the upper bound goes to $0$ for $n \rightarrow \infty$.
+    \item We define $h(E_1, ..., E_n) := \frac{M_n}{2}$. It clearly holds that $h$ is 1-Lipschitz continuous. Note that for $h$ to be $f$-certifiable, $f$ must be in $\Theta(n)$, since we have to choose all indices $i$ with $E_i = 1$ and even for $s = 0$ we can still have $\frac{n}{2}$ indices with $E_i = 1$. Therefore we choose $f(s) = n$, as the results only differ in constant factors. 
+
+    Using Talagrand's inequality we get
+    \begin{align*}
+        P(h(E) \leq \mu - \lambda \sqrt{f(\mu)}) P(h(E) \geq \mu) \leq \exp\left(\frac{-\lambda^2}{4}\right)
+    \end{align*}
+    Using $f(s) = n$ it follows 
+    \begin{align*}
+        P(h(E) \leq \mu - \lambda \sqrt{n}) P(h(E) \geq \mu) \leq \exp\left(\frac{-\lambda^2}{4}\right)
+    \end{align*}
+    Choosing $\mu = m + \lambda \sqrt{n}$ where $m$ is the median of $h(E)$ and using $h(E) = \frac{M_n}{2}$ gives
+    \begin{align*}
+        P(h(E) \geq m + \lambda \sqrt{n}) = P(M_n \geq 2(m + \lambda \sqrt{n})) \leq 2 \exp\left(\frac{\lambda^2}{4}\right)
+    \end{align*}
+    With $\lambda' = 2(m + \lambda \sqrt{n})$ we get
+    \begin{align*}
+        P(M_n \geq \lambda') \leq 2 \exp\left(\frac{(\lambda' -2m)^2}{16n}\right)
+    \end{align*}
+    This bound does not improve the bound from (a) as for $\lambda' \in O(\sqrt{n})$ the term $\exp\left(\frac{(\lambda' -2m)^2}{16n}\right)$ does not go to $0$. 
+    
+    
+\end{enumerate}
 \end{aufgabe}
 \begin{aufgabe}
-4
+ Consider the one-dimensional random geometric graph $G$ using $n$ vertices with independently drawn positions $X_1, \dots, X_n  \sim \mathcal U([0,1])$
+ and distance cutoff $\eps \in O(n^{-\frac{1}{2}})$. Then, the maximum degree $\Delta \coloneqq \max_{i} d_i$ of $G$, with $d_i$ as degree of vertex $i$, has sub-linear growth (i.e. $o(n)$) with probability converging to 1.
+ \begin{proof}
+     Clearly, $\Delta \in O(n)$. Therefore, it suffices to show that any linear bound converges to zero probability, i.e. for every $c > 0$
+     \begin{align*}
+         P(\Delta \geq cn) \xrightarrow{n \rightarrow \infty} 0.
+     \end{align*}
+     By definition, $\Delta = \max_{i=1,\dots,n} d_i$, which enables us to use a union bound approach:
+     \begin{align*}
+          P(\Delta \geq cn) &= P\left(\bigcup_{i=1,\dots,n}\{d_i \geq  cn \} \right) \leq \sum_{i=1}^n P(d_i \geq cn) \\
+          &= n P(d_i - \expect{d_i} \geq cn - \expect{d_i}) \leq n P(|d_i - \expect{d_i}| \geq cn - \expect{d_i}).
+     \end{align*}
+     Notice that $d_i \sim Bin(n-1,O(\eps))$, since every vertex has an independent probability of $p \in O(\eps)$ to be in range $\eps$ of $X_i$.
+     Therefore, $\expect{d_i} \in O(n \eps) \subseteq O(\sqrt{n})$, and $\variance{d_i} \in O(n \eps (1-\eps) \subseteq O(\sqrt{n})$.
+     By Tschebychev, we conclude
+     \begin{align*}
+         n P\left(|d_i - \expect{d_i}| \geq cn - \expect{d_i}\right) &\leq \frac{\variance{d_i}}{(cn - \expect{d_i})^2} \\
+         &\in O \left( n\frac{\sqrt{n}}{(n-\sqrt{n})^2} \right) = O(n^{-\frac{1}{2}}) \xrightarrow{n \rightarrow \infty} 0.
+     \end{align*}
+ \end{proof}
+ Our proof also works completely analogous for any $k > 2$ such that $\eps \in O(n^{-\frac{1}{k}})$, which leads to the final bound $O(n^{-\frac{1}{k}}) \xrightarrow{n \rightarrow \infty} 0$.
+ It also seems to work for any $\eps \in o(1)$, which would imply that as long as $\eps$ tends to $0$, we will observe sublinearity of the maximum degree. (Which is surprisingly strong?)
 \end{aufgabe}
