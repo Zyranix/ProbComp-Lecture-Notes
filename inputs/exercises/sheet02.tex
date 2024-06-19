@@ -1,0 +1,140 @@
+\begin{aufgabe}
+    Let $X_1, \dots X_k \sim Pois(m)$ independent random variables and $c \in \natnum$.
+    Find $h \in \natnum$ such that the probability of at least one $X_i$ satisfying $X_i + c > h$ is at most $0.01$.
+
+    For the proof we use following Chernoff bound which can be found in the accompanying book (Theorem 5.4).
+    \begin{fact}
+        For a Poisson-distributed random variable $X$ with mean $m$ it holds for $x > m$ that
+        \begin{align*}
+            P(X \geq x) \leq \frac{e^{-m}(em)^x}{x^x}.
+        \end{align*}
+    \end{fact}
+    \begin{proof}
+        We can assume w.l.o.g. $c=0$, since it has no influence on the random variable itself.
+        For $c > 0$, we can simply add $c$ to the corresponding value of $h$ if $c$ would be $0$.
+        Furthermore, we can formalize the exercise quite elegantly using the inverse event that no $X_i$ satisfies the inequality, i.e. find $h$ such that
+        \begin{align*}
+            \prod_{i=1}^{k}P(X_i \leq h) \overset{!}{\geq} 0.99.
+        \end{align*}
+        Using our Chernoff bound, it holds for $h > m$ that
+        \begin{align*}
+            \prod_{i=1}^{k}P(X_i \leq h) = \prod_{i=1}^{k}1 - P(X_i > h) \geq \prod_{i=1}^{k}1 - P(X_i \geq h) \geq\left(1- \frac{e^{-m}(em)^{h}}{h^{h}}\right)^k.
+        \end{align*}
+        At this point, we need to solve the last term equaling $0.99$ for $h$ to find a valid value for $h$.
+        According to WolframAlpha we need to use the Lambert W function and deduce
+        \begin{align*}
+            h = m\exp\left(W\left(\frac{-b}{me}\right)+1  \right), \quad b \coloneqq m + \log(1-\sqrt[k]{0.99}) < m.
+        \end{align*}
+        I cannot be bothered to write down if this indeed yields the wanted inequality.
+        However, we can easily verify $h > m$:
+        Notice that $\frac{-b}{me} > - \frac{1}{e}$, so we use $W$ on the upper branch only, on which it is strictly monotonically increasing.
+        Since $W(e^{-1})=-1$, the exponent of the upper term is always greater than $0$, and thus $h > m \exp(0) = m$.
+    \end{proof}
+\end{aufgabe}
+\begin{aufgabe}
+    Let $X=(X_1,\dots, X_n), Y=(Y_1,\dots,Y_n)$ be two random strings of i.i.d characters drawn from some finite set.
+    The longest common subsequence is definied as the longest pair of sequences $i_1,i_2,\dots$ and $j_1,j_2,\dots$ such that $X_{i_1}=Y_{j_1}$ etc.
+    Also, define $Z$ as the singular long sequence of $2n$ i.i.d. random variables by concatenating $X$ to $Y$.
+    \begin{enumerate}[(a)]
+        \item The expected length $l$ of the longest common subsequence for alphabet size $\Gamma$ satisfies $\frac{1}{\Gamma}n < l$.
+              There is also an upper bound $l/n < c_2 < 1$ whose discovery we leave as an exercise to the reader.
+              \begin{proof}
+                  Consider following problem: Find the longest common subsequence in $Y$ that is a substring starting in position $0$ in $X$.
+                  In other words, we fix the subsequence in $X$ and try to find matching characters in $Y$.
+                  This can be done easily using a greedy approach, i.e. if you are not yet at the end of $Y$ and already found a subsequence of length $k$, from your current position on find the next possible index in $Y$ that contains the character $X_{k+1}$.
+                  The number of steps until we find a matching character in $Y$ is geometrically distributed with parameter $1/\Gamma$, so we expect to need $k$ steps.
+                  Since every character in $Y$ has an independent probability of $1/k$ of matching with the respective value in $X$, the total number of expected matches is $n/k$ by linearity.
+
+                  Since our problem yields a lower bound of the expected length, we have shown $\frac{n}{k} \leq l$.
+                  Strict inequality follows by repeating the process for another starting position in $X$ and taking the maximum of the respective output length.
+                  The sole existence of instances such that this increases our lower bound suffices to disprove equality, and we do not need to do any exact math with highly correlated processes.
+              \end{proof}
+        \item
+              Let $h$ be the function that maps $Z$ to the length of the longest common subsequence.
+              Then, following concentration result holds for any $\lambda > 0$:
+              \begin{align*}
+                  P(|h(Z) - \expect{h(Z)}| \geq \lambda) \leq 2\exp \left(\frac{-\lambda^2}{n}\right).
+              \end{align*}
+              \begin{proof}
+                  Clearly, $h$ is $1$-Lipschitz continuous,
+                  since changing exactly one letter at worst increases or decreases the longest common subsequence by 1.
+                  Applying McDiarmid (\autoref{thm:mcdiarmid}) immediately yields our desired result (notice $Z$ uses $2n$ variables).
+              \end{proof}
+        \item Again, use $h$ as before.
+              Following concentration result holds for the mean $m$ of $h(Z)$ and any $\lambda > 0$:
+              \begin{align*}
+                  P(|h(Z) - m | \geq \lambda\sqrt{2m}) & \leq 4\exp\left(-\frac{\lambda^2}{4}\right).
+              \end{align*}
+              \begin{proof}
+                  We already established $h$ to be $1$-Lipschitz continuous.
+                  Now, use $f(s) \coloneqq 2s$. We show $h$ is $f$-certifiable.
+                  Assume $f(Z) \geq s$, and choose $\mathcal I$ to be the indices of $Z$ that belong to a common subsequence of length $s$ (which exists by definition).
+                  In particular, $|\mathcal I| = 2s \leq f(s)$, since we choose one index of $X$ and $Y$ each per length unit.
+                  Also, if $Z' =_{\mathcal I} Z$, then by choice of $\mathcal I$ it holds that $Z'$ contains a common subsequence of length at least $s$. Therefore, $h$ is $f$-certifiable.
+
+                  By Talagrand (\autoref{thm:talagrand_cert}), we can now deduce using $m$ as the median of $h(Z)$, and $\lambda > 0$
+                  \begin{align*}
+                      P(h(Z) \leq m - \lambda\sqrt{2m})P(h(X) \geq m)  & \leq \exp\left(-\frac{\lambda^2}{4}\right), \\
+                      P(h(Z) \leq m )P(h(X) \geq m + \lambda\sqrt{2m}) & \leq \exp\left(-\frac{\lambda^2}{4}\right).
+                  \end{align*}
+                  Using $P(h(Z) \leq m), P(h(Z) \geq m) \geq \frac{1}{2}$ and adding up both cases yields
+                  \begin{align*}
+                      P(|h(Z) - m | \geq \lambda\sqrt{2m}) & \leq 4\exp\left(-\frac{\lambda^2}{4}\right).
+                  \end{align*}
+
+              \end{proof}
+    \end{enumerate}
+\end{aufgabe}
+\begin{aufgabe}
+    Let $X$ be the simple random walk on $\mathbb{Z}$ with $X_0 = 0$ and $M_n = \max_{0 \leq i \leq n}X_i$ the running maximum. For $1 \leq i \leq n$ we define $E_i := X_i - X_{i-1}$. Note that $X_k = \sum_{i = 1}^kE_k$.
+    \begin{enumerate}[(a)]
+        \item Since $X_n$ is the sum of $n$ independent random variables with variance $Var[E_i] = 1$, we know that $Var[X_n] = n$. By Kolmogorov's inequality, it holds for $\lambda > 0$ that
+              $$P(M_n \geq \lambda) \leq \frac{Var[X_n]}{\lambda^2}.$$
+              For $\lambda \in \omega(\sqrt{n})$ the upper bound goes to $0$ for $n \rightarrow \infty$.
+        \item We define $h(E_1, ..., E_n) := \frac{M_n}{2}$. It clearly holds that $h$ is 1-Lipschitz continuous. Note that for $h$ to be $f$-certifiable, $f$ must be in $\Theta(n)$, since we have to choose all indices $i$ with $E_i = 1$ and even for $s = 0$ we can still have $\frac{n}{2}$ indices with $E_i = 1$. Therefore we choose $f(s) = n$, as the results only differ in constant factors.
+
+              Using Talagrand's inequality we get
+              \begin{align*}
+                  P(h(E) \leq \mu - \lambda \sqrt{f(\mu)}) P(h(E) \geq \mu) \leq \exp\left(\frac{-\lambda^2}{4}\right)
+              \end{align*}
+              Using $f(s) = n$ it follows
+              \begin{align*}
+                  P(h(E) \leq \mu - \lambda \sqrt{n}) P(h(E) \geq \mu) \leq \exp\left(\frac{-\lambda^2}{4}\right)
+              \end{align*}
+              Choosing $\mu = m + \lambda \sqrt{n}$ where $m$ is the median of $h(E)$ and using $h(E) = \frac{M_n}{2}$ gives
+              \begin{align*}
+                  P(h(E) \geq m + \lambda \sqrt{n}) = P(M_n \geq 2(m + \lambda \sqrt{n})) \leq 2 \exp\left(\frac{\lambda^2}{4}\right)
+              \end{align*}
+              With $\lambda' = 2(m + \lambda \sqrt{n})$ we get
+              \begin{align*}
+                  P(M_n \geq \lambda') \leq 2 \exp\left(\frac{(\lambda' -2m)^2}{16n}\right)
+              \end{align*}
+              This bound does not improve the bound from (a) as for $\lambda' \in O(\sqrt{n})$ the term $\exp\left(\frac{(\lambda' -2m)^2}{16n}\right)$ does not go to $0$.
+
+
+    \end{enumerate}
+\end{aufgabe}
+\begin{aufgabe}
+    Consider the one-dimensional random geometric graph $G$ using $n$ vertices with independently drawn positions $X_1, \dots, X_n  \sim \mathcal U([0,1])$
+    and distance cutoff $\eps \in O(n^{-\frac{1}{2}})$. Then, the maximum degree $\Delta \coloneqq \max_{i} d_i$ of $G$, with $d_i$ as degree of vertex $i$, has sub-linear growth (i.e. $o(n)$) with probability converging to 1.
+    \begin{proof}
+        Clearly, $\Delta \in O(n)$. Therefore, it suffices to show that any linear bound converges to zero probability, i.e. for every $c > 0$
+        \begin{align*}
+            P(\Delta \geq cn) \xrightarrow{n \rightarrow \infty} 0.
+        \end{align*}
+        By definition, $\Delta = \max_{i=1,\dots,n} d_i$, which enables us to use a union bound approach:
+        \begin{align*}
+            P(\Delta \geq cn) & = P\left(\bigcup_{i=1,\dots,n}\{d_i \geq  cn \} \right) \leq \sum_{i=1}^n P(d_i \geq cn)                \\
+                              & = n P(d_i - \expect{d_i} \geq cn - \expect{d_i}) \leq n P(|d_i - \expect{d_i}| \geq cn - \expect{d_i}).
+        \end{align*}
+        Notice that $d_i \sim Bin(n-1,O(\eps))$, since every vertex has an independent probability of $p \in O(\eps)$ to be in range $\eps$ of $X_i$.
+        Therefore, $\expect{d_i} \in O(n \eps) \subseteq O(\sqrt{n})$, and $\variance{d_i} \in O(n \eps (1-\eps) \subseteq O(\sqrt{n})$.
+        By Tschebychev, we conclude
+        \begin{align*}
+            n P\left(|d_i - \expect{d_i}| \geq cn - \expect{d_i}\right) & \leq \frac{\variance{d_i}}{(cn - \expect{d_i})^2}                                                                 \\
+                                                                        & \in O \left( n\frac{\sqrt{n}}{(n-\sqrt{n})^2} \right) = O(n^{-\frac{1}{2}}) \xrightarrow{n \rightarrow \infty} 0.
+        \end{align*}
+    \end{proof}
+    Our proof also works completely analogous for any $k > 2$ such that $\eps \in O(n^{-\frac{1}{k}})$, which leads to the final bound $O(n^{-\frac{1}{k}}) \xrightarrow{n \rightarrow \infty} 0$.
+    It also seems to work for any $\eps \in o(1)$, which would imply that as long as $\eps$ tends to $0$, we will observe sublinearity of the maximum degree. (Which is surprisingly strong?)
+\end{aufgabe}
