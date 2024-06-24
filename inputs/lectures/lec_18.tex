@@ -1,0 +1,99 @@
+%! TEX root = ../../master.tex
+\lecture[Averaging sampler. Explicit extractors.]{Mo 24 June 2024}{Constructing explicit extractors}
+We will show how we can construct an averaging sampler using an extractor.
+\begin{theorem}
+    Let $\xi : \{0,1\}^n \times \{0,1\}^d \rightarrow \{0,1\}^m$
+    be an $(\eps, k)$-extractor.
+    Also, let $G : \{0,1\}^n \rightarrow (\{0,1\}^m)^{2^d}$ with $G(x) = \xi(x,u)$ for $u \in \{0,1\}^d$.
+    Then, $G$ is an averaging sampler with accuracy $\eps$ and error $\delta = 2^{1+k-n}$.
+\end{theorem}
+\begin{proof}
+    Suppose for contradiction that there exists a function $f : \{0,1\}^m \rightarrow [0,1]$
+    such that with probability larger $\delta$ it holds that
+    \begin{align}\label{eq:avg_sampler_prob}
+        \left| \frac{1}{2^d} \sum_{i=1}^{2^d} f(\xi (X, u_i)) - \expect{f(U_m)} \right| > \eps
+    \end{align}
+    for some random variable $X$ with $H_\infty(X) \geq k$.
+    Then, there are $\delta \cdot 2^n$ strings $x \in \{0,1\}^n$
+    for which \eqref{eq:avg_sampler_prob} holds (replacing $X$ by $x$).
+
+    Without loss of generality, for at least half of these $x$ it holds that\footnote{otherwise consider the other direction of the inequality}
+    \begin{align}\label{eq:avg_sampler_concrete_x}
+        \sum_{i=1}^{2^d} f(\xi (x, u_i)) > 2^d (\expect{f(U_m)} + \eps).
+    \end{align}
+    Let $B$ be the set of such $x$.
+    It has size $|B| \geq \delta \cdot 2^{n-1} = 2^k$.
+    Then, the uniform distribution $Y$ on $|B|$ has min-entropy $k$.
+    Since $\xi$ is an extractor, by definition
+    \begin{align*}
+        || \xi(Y, U_d) - U_m ||_{TV} < \eps,
+    \end{align*}
+    thus as a natural property of the total variational distance
+    \begin{align*}
+        || f(\xi(Y, U_d)) - f(U_m) ||_{TV} < \eps,
+    \end{align*}
+    and by some measure theory even
+    \begin{align*}
+        | \expect{f(\xi(Y, U_d))} - \expect{f(U_m)} | < \eps.
+    \end{align*}
+    But, for said choice of $Y$,
+    \begin{align*}
+        \expect{f(\xi(Y, U_d))} > \expect{f(U_m)} + \eps.
+    \end{align*}
+    So, $\xi$ is \emph{not} a $(k,\eps)$-extractor - contradiction, $G$ must be an averaging sampler!
+\end{proof}
+What remains to demonstrate is a way to explicitly construct an extractor, which we will do
+using an averaging sampler.
+First, let us deepen our understanding on what the \emph{seed} is supposed to do.
+Recall that we initially gave some intuition why a meaningful seedless extractor cannot exist in general.
+We wanted to solve this problem by introducing a random seed as additional input;
+however, let us now think of the seed as a way of randomly choosing a function $f$ to evaluate.
+\begin{lemma}
+    Suppose that we can randomly draw an $f$ from a set $F$ of functions
+    $f : \{0,1\}^{\log(n)} \rightarrow \{0,1\}^k$
+    such that $||f - U_F||_{TV} < \eps$.
+    Then, using bitstrings of length $\log(n)$,
+    \begin{align*}
+        \xi : \{0,1\}^{n \log n} \times F & \rightarrow \{0,1\}^{nk},       \\
+        X \coloneqq [X_1, \dots, X_n], f  & \mapsto [f(X_1), \dots, f(X_n)]
+    \end{align*}
+    is an extractor with error $\eps \cdot n$.
+\end{lemma}
+\begin{proof}
+    We use induction to show $[f(X_i)]$ is close to $[U_k]$.
+    Let
+    \begin{align*}
+        Z_i \coloneqq [f(X_1), \dots, f(X_i), V_{i+1}, \dots, V_n]
+    \end{align*}
+    using independent $V_i \sim \mathcal U(\{0,1\}^k)$.
+    Then
+    \begin{align*}
+        ||Z_0 - U_{nk}||_{TV} = 0.
+    \end{align*}
+    As inductive assumption, suppose that
+    \begin{align*}
+        ||Z_i - U_{nk}||_{TV} \leq i\cdot \eps.
+    \end{align*}
+    Then, by triangle inequality
+    \begin{align*}
+        ||Z_{i+1} - U_{nk}||_{TV} \leq ||Z_{i+1} - Z_i||_{TV} + \underbrace{||Z_i - U_{nk}||_{TV}}_{< i \cdot \eps}.
+    \end{align*}
+    For the remaining part, the only source of variation stems from
+    \begin{align*}
+        ||f(X_i) - V_i||_{TV} = ||f(X_i) - f_n(X_i)||_{TV} \leq \eps,
+    \end{align*}
+    which finishes the proof.
+\end{proof}
+If now we can construct a way to choose a random element of $F$, we can use this lemma to
+finish our extractor construction.
+Notice that any $f : \{0,1\}^{\log(n)} \rightarrow \{0,1\}^k$ can be represented as a
+bitstring in $\{0,1\}^{2^{\log(n)}\cdot k} = \{0,1\}^{nk}$.
+We saw that as long as $n \leq 2^k$ we can approximately sample elements
+of $F$ with only (roughly) $O(k)$ independent coin flips.
+This "approximation" is a problem, since pairwise independence is \emph{not} close enough.
+However, there is a way to explicitly draw $f$ close to uniform
+using $O(k)$ true bit flips.
+It uses the averaging sampler and "refines" it via so-called \emph{expander graphs}.
+
+Thus, the choice of $k = \log(n)$ allows us to extract an (almost) uniform random variable
+of the same order as our weak input, using significantly fewer true random bit flips.
