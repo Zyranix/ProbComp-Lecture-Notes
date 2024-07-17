@@ -51,3 +51,6 @@ master.pdf
 ## Gnuplot directories
 master.gnuplots/
 full.gnuplots/
+
+## simulation output
+*.html
