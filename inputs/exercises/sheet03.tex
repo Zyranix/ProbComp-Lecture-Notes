@@ -1,0 +1,170 @@
+\begin{aufgabe}
+ \begin{definition}[\vocab{Randomized Polynomial-time}]
+     A decision problem is part of $\RP$ iff there is a randomized algorithm running in polynomial time that
+     \begin{enumerate}
+         \item for yes-instances returns correctly "Yes" $\frac{1}{2}$ of the time,
+         \item for no-instances always returns correctly "No".
+     \end{enumerate}
+ \end{definition}
+ Assuming $\CSAT \in \FPRAS$. Show that $\NP = \BPP = \RP$.
+ \begin{proof}
+    We will show that $\SAT \in \BPP$. Since $\SAT \in \NPC$, we can construct an algorithm for \emph{any} decision problem $P \in \NP$ by (deterministically) transforming the instance in polynomial time and space to a $\SAT$ instance. 
+    Then, solving the $\SAT$ instance with the $\RP$ algorithm still yields polynomial running time and keeps the required probabilities.
+
+    Consider an instance $\mathcal I$, and let $C$ be its solution count (i.e. the solution to the equivalent $\CSAT$ instance).
+    We construct following algorithm: 
+    Since $\CSAT \in \FPRAS$, there is an algorithm polynomial in input size with parameters $\eps = \delta = \frac{1}{3}$ such that following error bounds hold for the approximate output count $X$:
+    \begin{enumerate}
+        \item If $\mathcal I$ is a yes-instance, then $C \geq 1$, and 
+        \begin{align*}
+            \frac{2}{3}  \leq  P(|X - C| \leq \frac{1}{3}C)   \leq P(C - X \leq \frac{1}{3}C) = P(X \geq \frac{2}{3}C)  \leq P(X \geq \frac{2}{3}).
+        \end{align*}
+        \item If $\mathcal I$ is a no-instance, then $C = 0$, and 
+        \begin{align*}
+            \frac{2}{3}  \leq  P(|X - C| \leq \frac{1}{3}C)  \leq P(|X| \leq 0) = P(X = 0).
+        \end{align*}
+    \end{enumerate}
+    We will guess $\mathcal I$ by running the $\FPRAS$ algorithm to estimate $C$ as $X$, and say it is a yes-instance if $\lceil X \rceil \geq 1$, otherwise it is a no-instance ($X=0$). Our error bounds then show that all properties of a $\BPP$ algorithm are satisfied.
+
+    Analogous, it suffices to show $\SAT \in \RP$ to imply $\NP = \RP$. The general idea now is that we only declare a yes-instance as yes if we can construct a certificate (here: admissible assignment) to ensure that a no-instance is always declared as no correctly.
+    Consider following algorithm for a $\SAT$ instance $\mathcal I$ with $n$ variables $x_i$:
+    \newline
+    \begin{algorithm}[H]
+        \label{algo:sat_is_rp}
+        \SetAlgoLined
+        \For{$k=1,\dots,n$}{
+            $x_k \leftarrow $getRandomBit$()$\\
+            $\mathcal I_{k} \leftarrow \text{simplify~} \mathcal I \text{~by fixing~} x_1, \dots x_k$\\
+            $X \leftarrow $csatFprasSolver$(\mathcal I, \eps, \delta_n)$\\
+            \If{$X = 0$}{
+                $x_{k} \leftarrow \NOT x_{k}$\\
+            }
+        }
+        return isSatSolution($x, \mathcal I$)\\
+        \caption{$\RP$ algorithm for $\SAT$}
+    \end{algorithm}
+    
+    Obviously, for a no-instance we always return no, since it never has valid assignments.
+    For a yes-instance, notice that we try to generate the certificate by fixing a variable one after another and checking if the corresponding $\CSAT$ instance is estimated to have a solution.
+    W.l.o.g. assume there is only one valid assignment.
+    If $I_{k-1}$ is still a yes-instance, we keep the initial correct assignment of the new variable $x_k$ with probability $1- \delta_n$ (derived by same calculations as above), and reject a wrong assignment in favor of the correct assignment with probability $1 - \delta_n$.
+    Therefore, our final assignment has a probability of at least $(1 - \delta_n)^n$ to be valid.
+    We were not able to choose $\delta_n$ in such way that showed that the FPRAS algorithm is still polynomial in $n$.
+    We tried $\delta_n = \sqrt[n]{1/2}$.
+
+ \end{proof}
+\end{aufgabe}
+\begin{aufgabe}
+ Consider a deck of cards and following shuffling process: 
+ Choose two cards (by rank) uniformly independent and swap them. Choosing the same card twice results in no swap.
+ We will show that the expected shuffling time needed is $O(n^2)$.
+ 
+ First, we show that this process is equivalent to choosing a fixed position in the deck and a card (by rank) uniformly indepent.
+ \begin{proof}
+     There is a bijection from rank to position, so uniformity is conserved.
+ \end{proof}
+ Using this variant, we consider their coupling where its two copies choose the same position and card.
+ Denote with $A_t$ the number of cards with different positions in the two decks at timestamp $t$.
+ Then, $A_t$ is non-increasing.
+ \begin{proof}
+     Consider following case distinction:
+     \begin{enumerate}
+         \item The cards chosen by rank are already in the same position. 
+         Then, they get swapped to the same position, as well as the cards chosen by position, resulting in no change.
+         \item The card chosen by rank has different positions in the deck, and the card chosen by position have same rank.
+         Then, the cards chosen by rank get swapped into the same position, but the match of the cards chosen by position is broken, resulting in no change.
+         \item The cards chosen by rank has different positions in the deck, and the cards chosen by position have different rank.
+         Then, the cards chosen by rank get swapped into the same position, resulting in a new match, and the cards chosen by position might match by chance, resulting in a decrease of at least 1 (up to 3) of $A_t$.
+     \end{enumerate}
+     So, case 1 and 2 result in no change, and $3$ results in a decrease.
+ \end{proof}
+ It holds that
+ \begin{align*}
+     P(A_{t+1} \leq A_t - 1 \mid A_t \geq 1) \geq \left( \frac{A_t}{n}\right)^2
+ \end{align*}
+ \begin{proof}
+     As shown previously, only case 3 results in a decrease, so we only need to calculate the probability of case 3 happening.
+     If there are $A_t$ cards with differing positions, there also $A_t$ positions with differing cards.
+     Therefore, the probability that the cards chosen by position are different has probability $A_t/n$.
+     The same holds for the cards chosen by rank not being in the same position.
+     Since the two events are independent, their total probability is their product.
+ \end{proof}
+ The expected time $\expect{T}$ until $A_t=0$ is $O(n^2)$ regardless of the initial coupling state.
+ \begin{proof}
+     By using the previous result, the number of steps until $A_t$ decreases follows a geometric distribution with mean $(n/A_t)^2$. In the worst case, $A_t=n$, and we need to decrease $n$ times until we hit $A_t=0$,
+     i.e. the expected number of steps until $A_t=0$ is upper-bounded by the expected number of steps of $n$ geometric processes $G_k \sim Geo \left(\frac{k}{n}\right)^2$.
+     Then, we get a partial harmonic series
+     \begin{align*}
+         \expect{T} \leq \expect{\sum_{k=1}^{n} G_k} = \sum_{k=1}^n \frac{n^2}{k^2} \leq n^2 \sum_{k=1}^\infty \frac{1}{k^2} = n^2\frac{\pi^2}{6} \in O(n^2).
+     \end{align*}
+ \end{proof}
+\end{aufgabe}
+\begin{aufgabe}
+Consider a card shuffling process for $n$ cards where we choose a position $i$ from $0, \dots n-1$ and swap the cards $i$ and $i+1$, with $0$ implying no shuffle.
+
+This process converges to the uniform distribution of cards.
+\begin{proof}
+    The process is clearly aperiodic (every state has a self-loop) and irreducible (there is a swap pattern to reach every shuffling state from each other).
+    Since the process is symmetric (every transition is reversible with same probability), the inbound probabilities (i.e. the columns of the state transition matrix) sum to 1 for every state.
+    By the Perron–Frobenius theorem for Markov chains, the process converges to its unique stationary distribution, which clearly is the uniform distribution over all possible shufflings.
+\end{proof}
+Consider the coupling of two deck copies $X,Y$:\\
+Let $S = \{j_0, \dots, j_k\}, 0 = j_0 < \dots < j_k$ 
+denote the set of positions $i$ where the cards at position $j$ \emph{and} $j+1$ match up.
+First, let $X$ choose a position $j$ and change according to above process.
+Then, $Y$ swaps the same cards if $j \not \in S$. 
+Otherwise $j = j_i \in S$ for some $i$ and we swap $j_{i+1}$ and its successor (i.e. we "rotate" within $S$).
+Its resulting mixing time $\tau(\eps)$ is $O(n^4)$ for a fixed $\eps$.
+\begin{proof}
+    First, we show that the coupling never destroys matches, i.e. $S$ is always a subset of the previous timestamp.
+    Consider following case distinction:
+    \begin{enumerate}
+        \item $j \not \in S$: Then we swap the same positions, clearly resulting in no change.
+        \item $j = j_i \in S$: Then the cards at $j_i, j_i+1$ as well as $j_{i+1}, j_{i+1}+1$ do not match up by definition, so there is nothing to destroy.
+    \end{enumerate}
+    Also, the relative position of cards between decks stays consistent, i.e. if $i \leq j$ for a specific card with positions $i,j$ at one point in $X,Y$ respectively, then at any point of the process $i \leq j$ for their positions.
+    Only the cases where the cards are at consecutive positions are interesting as this is the only time the relative position could change (since matches do not get destroyed, $i=j$ is clear).
+    In particular, we would need to swap $i$ to the left and $j$ to the right (or vice versa, depending on $i>j$ or $i<j$).
+    Notice that $\min(i,j) = j_k \in S$ since both positions of the card in question contain non-matching cards.
+    \begin{enumerate}
+        \item Case $i+1 = j$: For a rightwards swap in $X$, suppose we choose position $i = j_k$. 
+        Since we rotate within $S$ for $Y$, the card at position $j$ at worst can only get swapped further to the right.
+        \item Case $i = j+1$: For a leftwards swap in $X$, suppose we choose position $j = j_k$.
+        Then, the card at $j$ in $Y$ does not get swapped anyway since we rotate in $S$.
+    \end{enumerate}
+    Now, for a card with fixed rank, if the righter card in its corresponding deck at one point reached the beginning of the deck (position 1), the previous results guarantee that the cards will be matched up from that point in time on.
+    Thus, as soon as \emph{all} cards reached the beginning once, we can guarantee that $X,Y$ are synchronized, yielding us an upper bound for mixing time.
+    We are interested in the expected hitting time $T_k$ of a card initially in position $k$ reaching position $1$.
+    Notice this number is given by following recurrent relation, gained by considering all alternatives:
+    \begin{align*}
+        \expect{T_k} = \begin{cases}
+        1 + \frac{1}{n}(\expect{T_{k-1}} + \expect{T_{k+1}}) + \frac{n-2}{n}\expect{T_k}, & 1<k<n\\
+        1 + \frac{1}{n}\expect{T_{k-1}} + \frac{n-1}{n}\expect{T_k}, & k=n\\
+        0, & k=1
+        \end{cases}.
+    \end{align*}
+    By induction from $n$ to $2$, we can show 
+    \begin{align*}
+        \expect{T_k} = (n-k+1)n + \expect{T_{k-1}}.
+    \end{align*}
+    For $k=n$ a simple reordering yields $\expect{T_n} = n + \expect{T_{n-1}}$.
+    Now, assuming the identity holds for all $k+1$ to $n$.
+    By assumption and again some reordering
+    \begin{align*}
+        &\expect{T_k} = 1 + \frac{1}{n}(\expect{T_{k-1}} + (n-k)n + \expect{T_{k}} ) + \frac{n-2}{n}\expect{T_k} \\
+        \Longleftrightarrow \quad &  \expect{T_k} =  \expect{T_{k-1}} + n(n-k+1).
+    \end{align*}
+    Using another straightforward induction we see
+    \begin{align*}
+        \expect{T_k} = n\sum_{i=2}^{k}(n-i+1) \leq n\frac{n(n-1)}{2} \leq n^3
+    \end{align*}
+    Let $T_{\max}$ be the hitting time that every card reached the beginning at least once.
+    As an upper bound, $n$ cards need in expectancy at most $n^4$ steps until every card reached the beginning (i.e. observe one card until it reaches the beginning, then the next etc), so $\expect{T_{\max}} \leq n^4$.
+    Let $t(\eps) = \eps n^4$.
+    By monotony of probability and Markov bounds we conclude
+    \begin{align*}
+        P_{X,Y}(X_{t(\eps)} \neq Y_{t(\eps)}) \leq P(T_{\max} \geq t(\eps)) \leq P(T_{\max} \geq \frac{1}{\eps} \expect{T_{\max}}) \leq \eps,
+    \end{align*}
+    and by applying the mixing time lemma from the lecture $\tau(\eps) \leq t(\eps) \in O(n^4)$.
+\end{proof}
+\end{aufgabe}
